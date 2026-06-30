@@ -17,25 +17,51 @@ import type { WeatherForecastResponse } from '../types/weather';
 const ECMWF_URL = 'https://api.open-meteo.com/v1/ecmwf';
 
 export async function fetchEcmwfForecast(lat: number, lon: number, timezone: string): Promise<WeatherForecastResponse> {
-  const params = new URLSearchParams({
-    latitude: lat.toString(),
-    longitude: lon.toString(),
-    hourly: [
-      'temperature_2m',
-      'apparent_temperature',
-      'precipitation',
-      'rain',
-      'snowfall',
-      'cloud_cover',
-      'wind_speed_10m',
-      'wind_direction_10m',
-      'weather_code'
-    ].join(','),
-    forecast_days: '2',
-    timezone: timezone,
-  });
+  try {
+    const params = new URLSearchParams({
+      latitude: lat.toString(),
+      longitude: lon.toString(),
+      hourly: [
+        'temperature_2m',
+        'apparent_temperature',
+        'precipitation_probability',
+        'precipitation',
+        'rain',
+        'snowfall',
+        'cloud_cover',
+        'wind_speed_10m',
+        'wind_direction_10m',
+        'weather_code'
+      ].join(','),
+      forecast_days: '2',
+      timezone: timezone,
+    });
 
-  const response = await fetch(`${ECMWF_URL}?${params}`);
-  if (!response.ok) throw new Error('Failed to fetch ECMWF forecast data');
-  return response.json();
+    const response = await fetch(`${ECMWF_URL}?${params}`);
+    if (!response.ok) throw new Error('Failed to fetch ECMWF forecast data');
+    return response.json();
+  } catch {
+    // Fallback: retry without precipitation_probability (not always available in ECMWF)
+    const params = new URLSearchParams({
+      latitude: lat.toString(),
+      longitude: lon.toString(),
+      hourly: [
+        'temperature_2m',
+        'apparent_temperature',
+        'precipitation',
+        'rain',
+        'snowfall',
+        'cloud_cover',
+        'wind_speed_10m',
+        'wind_direction_10m',
+        'weather_code'
+      ].join(','),
+      forecast_days: '2',
+      timezone: timezone,
+    });
+
+    const response = await fetch(`${ECMWF_URL}?${params}`);
+    if (!response.ok) throw new Error('Failed to fetch ECMWF forecast data');
+    return response.json();
+  }
 }

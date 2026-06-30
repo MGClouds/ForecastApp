@@ -51,3 +51,17 @@ export interface ParsedForecast {
   today: DayForecast;
   tomorrow: DayForecast;
 }
+
+export interface ModelInfo {
+  name: string;
+  description: string;
+  available: boolean;
+  loaded: boolean;
+}
+
+export interface MultiModelForecast {
+  parsed: ParsedForecast;
+  modelCount: number;
+  agreement: number;
+  modelNames: string[];
+}

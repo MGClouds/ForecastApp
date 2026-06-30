@@ -97,3 +97,32 @@
   color: #81d4fa;
   font-weight: 600;
 }
+
+.modelBar {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: rgba(79, 195, 247, 0.06);
+  border-top: 1px solid rgba(79, 195, 247, 0.12);
+  border-radius: 0 0 10px 10px;
+  margin-top: 8px;
+}
+
+.modelBadge {
+  font-size: 0.78rem;
+  color: rgba(224, 224, 224, 0.7);
+}
+
+.modelAgreement {
+  font-size: 0.78rem;
+  color: rgba(224, 224, 224, 0.6);
+}
+
+.bars {
+  font-family: monospace;
+  color: #4fc3f7;
+  letter-spacing: 1px;
+}

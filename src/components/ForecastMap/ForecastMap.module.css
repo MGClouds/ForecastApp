@@ -40,9 +40,14 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.layerBtn:hover {
+.layerBtn:hover:not(:disabled) {
   background: rgba(79, 195, 247, 0.1);
   color: #e0e0e0;
+}
+
+.layerBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .layerActive {
@@ -66,27 +71,91 @@
   width: 100%;
 }
 
-.sliderRow {
+.timeControls {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 22px 8px;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(0, 0, 0, 0.25);
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.sliderLabel {
-  font-size: 0.82rem;
-  color: rgba(224, 224, 224, 0.6);
-  white-space: nowrap;
+.ctrlBtn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.slider {
+.ctrlBtn:hover {
+  background: rgba(79, 195, 247, 0.15);
+}
+
+.playBtn {
+  background: rgba(79, 195, 247, 0.15);
+  border-color: rgba(79, 195, 247, 0.4);
+  color: #4fc3f7;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeLabel {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #81d4fa;
+  min-width: 50px;
+  text-align: center;
+}
+
+.frameSlider {
   flex: 1;
+  min-width: 80px;
   accent-color: #4fc3f7;
 }
 
-.placeholder {
-  font-size: 0.78rem;
-  color: rgba(224, 224, 224, 0.4);
-  padding: 8px 22px 16px;
-  font-style: italic;
+.frameType {
+  font-size: 0.75rem;
+  color: rgba(224, 224, 224, 0.55);
+  white-space: nowrap;
 }
+
+.radarUnavailable {
+  font-size: 0.82rem;
+  color: rgba(239, 154, 154, 0.7);
+  padding: 8px 22px;
+  margin: 0;
+}
+
+.attribution {
+  font-size: 0.72rem;
+  color: rgba(224, 224, 224, 0.35);
+  padding: 8px 22px 14px;
+  margin: 0;
+}
+
+.radarLegend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 22px;
+  font-size: 0.72rem;
+  color: rgba(224, 224, 224, 0.5);
+}
+
+.radarLegendBar {
+  height: 8px;
+  width: 120px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #add8e6, #0000ff, #00ff00, #ffff00, #ff0000);
+}
+

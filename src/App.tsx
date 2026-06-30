@@ -2,6 +2,9 @@ import { useState } from 'react';
 import type { SelectedLocation } from './types/location';
 import type { ParsedForecast } from './types/weather';
 import { fetchWeatherForecast, parseForecast } from './services/weatherService';
+import { fetchEcmwfForecast } from './services/ecmwfService';
+import { fetchDwdForecast } from './services/dwdService';
+import { averageModels, getModelAgreement } from './services/modelAveraging';
 import { SearchLocation } from './components/SearchLocation/SearchLocation';
 import { CurrentLocationButton } from './components/CurrentLocationButton/CurrentLocationButton';
 import { WeatherSummary } from './components/WeatherSummary/WeatherSummary';
@@ -18,12 +21,14 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [modelInfo, setModelInfo] = useState<{ count: number; names: string[]; agreement: number } | null>(null);
 
   function handleLocationSelect(location: SelectedLocation) {
     setSelectedLocation(location);
     setForecast(null);
     setError(null);
     setHasSearched(false);
+    setModelInfo(null);
   }
 
   async function handleFetchWeather() {
@@ -31,14 +36,29 @@ export default function App() {
     setLoading(true);
     setError(null);
     setHasSearched(true);
+    setModelInfo(null);
     try {
-      const response = await fetchWeatherForecast(
-        selectedLocation.latitude,
-        selectedLocation.longitude,
-        selectedLocation.timezone
-      );
-      const parsed = parseForecast(response, selectedLocation.timezone);
+      const { latitude, longitude, timezone } = selectedLocation;
+
+      const [openMeteoResult, ecmwfResult, dwdResult] = await Promise.allSettled([
+        fetchWeatherForecast(latitude, longitude, timezone),
+        fetchEcmwfForecast(latitude, longitude, timezone),
+        fetchDwdForecast(latitude, longitude, timezone),
+      ]);
+
+      const successful: { name: string; response: import('./types/weather').WeatherForecastResponse }[] = [];
+      if (openMeteoResult.status === 'fulfilled') successful.push({ name: 'Open-Meteo', response: openMeteoResult.value });
+      if (ecmwfResult.status === 'fulfilled') successful.push({ name: 'ECMWF IFS', response: ecmwfResult.value });
+      if (dwdResult.status === 'fulfilled') successful.push({ name: 'DWD ICON-EU', response: dwdResult.value });
+
+      if (successful.length === 0) throw new Error('All weather models failed to respond');
+
+      const averaged = averageModels(successful.map(s => s.response));
+      const agreement = getModelAgreement(successful.map(s => s.response));
+      const parsed = parseForecast(averaged, timezone);
+
       setForecast(parsed);
+      setModelInfo({ count: successful.length, names: successful.map(s => s.name), agreement });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch weather data');
     } finally {
@@ -71,7 +91,7 @@ export default function App() {
           )}
         </div>
 
-        {loading && <LoadingSpinner message="Fetching weather forecast..." />}
+        {loading && <LoadingSpinner message="Fetching 3 weather models..." />}
 
         {error && !loading && (
           <ErrorMessage message={error} onRetry={handleFetchWeather} />
@@ -79,7 +99,7 @@ export default function App() {
 
         {forecast && selectedLocation && !loading && (
           <div className={styles.forecastGrid}>
-            <WeatherSummary location={selectedLocation} today={forecast.today} />
+            <WeatherSummary location={selectedLocation} today={forecast.today} modelInfo={modelInfo} />
             <ForecastTabs forecast={forecast} />
             <div className={styles.bottomGrid}>
               <ForecastMap location={selectedLocation} />

@@ -5,13 +5,17 @@ import styles from './WeatherSummary.module.css';
 interface Props {
   location: SelectedLocation;
   today: DayForecast;
+  modelInfo?: { count: number; names: string[]; agreement: number } | null;
 }
 
-export function WeatherSummary({ location, today }: Props) {
+export function WeatherSummary({ location, today, modelInfo }: Props) {
   const current = today.hours[0];
   const temps = today.hours.map(h => h.temperature);
   const high = Math.max(...temps);
   const low = Math.min(...temps);
+
+  const agreementPct = modelInfo ? Math.round(modelInfo.agreement * 100) : null;
+  const filledBars = agreementPct !== null ? Math.round(modelInfo!.agreement * 6) : 0;
 
   return (
     <div className={styles.card}>
@@ -41,6 +45,22 @@ export function WeatherSummary({ location, today }: Props) {
             <span className={styles.high}>↑ {high}°C</span>
             <span className={styles.low}>↓ {low}°C</span>
           </div>
+        </div>
+      )}
+      {modelInfo && (
+        <div className={styles.modelBar}>
+          <span className={styles.modelBadge}>
+            📊 Averaged from {modelInfo.count} model{modelInfo.count !== 1 ? 's' : ''}: {modelInfo.names.join(' · ')}
+          </span>
+          {agreementPct !== null && (
+            <span className={styles.modelAgreement}>
+              Model agreement:{' '}
+              <span className={styles.bars}>
+                {'█'.repeat(filledBars)}{'░'.repeat(6 - filledBars)}
+              </span>
+              {' '}{agreementPct}%
+            </span>
+          )}
         </div>
       )}
     </div>
