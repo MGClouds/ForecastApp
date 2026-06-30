@@ -1,5 +1,6 @@
 import type { HourlyForecastItem } from '../types/weather';
 import type { SelectedLocation } from '../types/location';
+import type { Translations } from '../i18n/translations';
 
 export interface ExplanationFactor {
   factor: string;
@@ -14,7 +15,8 @@ export interface ForecastExplanationResult {
 
 export function generateForecastExplanation(
   hours: HourlyForecastItem[],
-  location: SelectedLocation
+  location: SelectedLocation,
+  t: Translations
 ): ForecastExplanationResult {
   const factors: ExplanationFactor[] = [];
 
@@ -25,6 +27,7 @@ export function generateForecastExplanation(
   const totalSnowfall = hours.reduce((s, h) => s + h.snowfall, 0);
   const totalRain = hours.reduce((s, h) => s + h.rain, 0);
   const elevation = location.elevation ?? 0;
+  const locationName = location.displayName || location.name;
 
   let certaintyLevel: 'low' | 'medium' | 'high';
 
@@ -39,64 +42,72 @@ export function generateForecastExplanation(
   if (maxPrecipProb >= 40 && maxPrecipProb < 70) {
     certaintyLevel = 'medium';
     factors.push({
-      factor: 'Moderate precipitation probability',
-      explanation: `Precipitation probability reaches ${maxPrecipProb}%, suggesting conditions are uncertain — forecast models indicate possible but not definite precipitation.`,
+      factor: t.factorModerateProb,
+      explanation: t.explainModerateProb.replace('{maxProb}', maxPrecipProb.toString()),
     });
   }
 
   if (avgCloudCover > 60 && maxPrecipProb < 40) {
     certaintyLevel = certaintyLevel === 'high' ? 'medium' : certaintyLevel;
     factors.push({
-      factor: 'High cloud cover without significant precipitation',
-      explanation: `Average cloud cover is ${Math.round(avgCloudCover)}%, yet precipitation probability remains low. Cloud systems may pass without producing measurable rain.`,
+      factor: t.factorHighCloud,
+      explanation: t.explainHighCloudNoRain.replace('{cloudCover}', Math.round(avgCloudCover).toString()),
     });
   }
 
   if (maxWindSpeed > 30) {
     certaintyLevel = certaintyLevel === 'high' ? 'medium' : certaintyLevel;
     factors.push({
-      factor: 'High wind speeds',
-      explanation: `Wind speeds may reach ${maxWindSpeed} km/h, causing precipitation zones to move quickly through the area. Timing of any rain could shift by 1–2 hours.`,
+      factor: t.factorHighWind,
+      explanation: t.explainHighWind.replace('{windSpeed}', maxWindSpeed.toString()),
     });
   }
 
   if (elevation > 500) {
     certaintyLevel = certaintyLevel === 'high' ? 'medium' : certaintyLevel;
     factors.push({
-      factor: 'Elevated terrain influence',
-      explanation: `${location.displayName} is located at approximately ${Math.round(elevation)}m elevation. Terrain can enhance precipitation and cause local variations not always captured by numerical models.`,
+      factor: t.factorElevation,
+      explanation: t.explainElevation
+        .replace('{location}', locationName)
+        .replace('{elevation}', Math.round(elevation).toString()),
     });
   }
 
   if (avgTemp < 3 && totalSnowfall > 0) {
     certaintyLevel = 'low';
     factors.push({
-      factor: 'Rain/snow transition zone',
-      explanation: `Temperatures near ${Math.round(avgTemp)}°C with forecast snowfall suggest the area may be near the freezing level. Small temperature changes could shift precipitation between rain and snow.`,
+      factor: t.factorRainSnow,
+      explanation: t.explainRainSnow.replace('{temp}', Math.round(avgTemp).toString()),
     });
   }
 
   if (maxPrecipProb < 20) {
     factors.push({
-      factor: 'Low precipitation likelihood',
-      explanation: 'Forecast models show conditions are not particularly favorable for precipitation. The atmosphere appears relatively stable for this period.',
+      factor: t.factorLowProb,
+      explanation: t.explainLowProb,
     });
   }
 
   if (factors.length === 0) {
     factors.push({
-      factor: 'Consistent model signals',
-      explanation: 'Weather models are in good agreement for this forecast period. Conditions appear relatively straightforward with no major sources of uncertainty identified.',
+      factor: t.factorConsistent,
+      explanation: t.explainConsistent,
     });
   }
 
+  const precipContext = maxPrecipProb > 50 ? 'likely precipitation' : 'predominantly dry conditions';
+  const cloudContext = avgCloudCover > 60 ? 'significant cloud cover' : 'relatively clear skies';
+
   let summary: string;
   if (certaintyLevel === 'high') {
-    summary = `The forecast for ${location.displayName} appears fairly confident. Model data shows ${maxPrecipProb > 50 ? 'likely precipitation' : 'predominantly dry conditions'} with ${avgCloudCover > 60 ? 'significant cloud cover' : 'relatively clear skies'}.`;
+    summary = t.summaryHigh
+      .replace('{location}', locationName)
+      .replace('{precipContext}', precipContext)
+      .replace('{cloudContext}', cloudContext);
   } else if (certaintyLevel === 'medium') {
-    summary = `There is moderate uncertainty in the forecast for ${location.displayName}. The model indicates possible precipitation, but several atmospheric factors may influence the actual outcome.`;
+    summary = t.summaryMedium.replace('{location}', locationName);
   } else {
-    summary = `The forecast for ${location.displayName} carries notable uncertainty. Near-freezing temperatures and precipitation create a complex scenario where small changes in conditions could significantly alter the outcome.`;
+    summary = t.summaryLow.replace('{location}', locationName);
   }
 
   return { summary, factors, certaintyLevel };

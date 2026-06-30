@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { searchLocations } from '../../services/geocodingService';
 import type { GeocodingResult, SelectedLocation } from '../../types/location';
+import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './SearchLocation.module.css';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function SearchLocation({ onLocationSelect }: Props) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -80,7 +82,7 @@ export function SearchLocation({ onLocationSelect }: Props) {
         <input
           type="text"
           className={styles.input}
-          placeholder="Search for a city or location..."
+          placeholder={t.searchPlaceholder}
           value={query}
           onChange={e => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setShowDropdown(true)}
@@ -106,3 +108,4 @@ export function SearchLocation({ onLocationSelect }: Props) {
     </div>
   );
 }
+

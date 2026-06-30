@@ -1,0 +1,42 @@
+.switcher {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(224, 224, 224, 0.6);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #e0e0e0;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.active {
+  background: rgba(79, 195, 247, 0.2);
+  border-color: rgba(79, 195, 247, 0.5);
+  color: #4fc3f7;
+}
+
+.flag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.code {
+  font-size: 0.72rem;
+}

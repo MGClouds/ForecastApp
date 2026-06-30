@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ParsedForecast } from '../../types/weather';
 import { HourlyForecastCard } from '../HourlyForecastCard/HourlyForecastCard';
+import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './ForecastTabs.module.css';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function ForecastTabs({ forecast }: Props) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'today' | 'tomorrow'>('today');
   const day = activeTab === 'today' ? forecast.today : forecast.tomorrow;
 
@@ -18,14 +20,14 @@ export function ForecastTabs({ forecast }: Props) {
           className={`${styles.tab} ${activeTab === 'today' ? styles.active : ''}`}
           onClick={() => setActiveTab('today')}
         >
-          <span>Today</span>
+          <span>{t.today}</span>
           <span className={styles.tabDate}>{forecast.today.label.split(',')[0]}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'tomorrow' ? styles.active : ''}`}
           onClick={() => setActiveTab('tomorrow')}
         >
-          <span>Tomorrow</span>
+          <span>{t.tomorrow}</span>
           <span className={styles.tabDate}>{forecast.tomorrow.label.split(',')[0]}</span>
         </button>
       </div>

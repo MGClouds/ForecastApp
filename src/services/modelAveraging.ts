@@ -50,6 +50,9 @@ export function averageModels(responses: WeatherForecastResponse[]): WeatherFore
 
   const n = refTimes.length;
 
+  const INTEGER_FIELDS = new Set(['temperature_2m','apparent_temperature','cloud_cover','wind_speed_10m','wind_direction_10m','precipitation_probability']);
+  const ONE_DECIMAL_FIELDS = new Set(['precipitation','rain','snowfall']);
+
   // Average numeric fields
   const averagedNumeric: Record<NumericHourlyKey, number[]> = {} as Record<NumericHourlyKey, number[]>;
   for (const field of NUMERIC_FIELDS) {
@@ -64,7 +67,14 @@ export function averageModels(responses: WeatherForecastResponse[]): WeatherFore
           if (val !== undefined && val !== null && !isNaN(val)) values.push(val);
         }
       }
-      averagedNumeric[field][i] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+      const raw = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+      if (INTEGER_FIELDS.has(field)) {
+        averagedNumeric[field][i] = Math.round(raw);
+      } else if (ONE_DECIMAL_FIELDS.has(field)) {
+        averagedNumeric[field][i] = Math.round(raw * 10) / 10;
+      } else {
+        averagedNumeric[field][i] = raw;
+      }
     }
   }
 

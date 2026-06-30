@@ -13,6 +13,7 @@ import {
   type RainViewerData,
   type RadarFrame,
 } from '../../services/radarService';
+import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './ForecastMap.module.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,6 +39,7 @@ interface Props {
 type ActiveLayer = 'none' | 'radar' | 'satellite';
 
 export function ForecastMap({ location }: Props) {
+  const { t } = useLanguage();
   const [rainviewerData, setRainviewerData] = useState<RainViewerData | null>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('none');
   const [radarFrames, setRadarFrames] = useState<RadarFrame[]>([]);
@@ -93,22 +95,22 @@ export function ForecastMap({ location }: Props) {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <h3 className={styles.title}>🗺️ Weather Map</h3>
+        <h3 className={styles.title}>{t.weatherMap}</h3>
         <div className={styles.layerButtons}>
           <button
             className={`${styles.layerBtn} ${activeLayer === 'none' ? styles.layerActive : ''}`}
             onClick={() => handleSetLayer('none')}
-          >🗺️ Map only</button>
+          >{t.mapOnly}</button>
           <button
             className={`${styles.layerBtn} ${activeLayer === 'radar' ? styles.layerActive : ''}`}
             onClick={() => handleSetLayer('radar')}
-          >🌧️ Rain Radar</button>
+          >{t.rainRadar}</button>
           <button
             className={`${styles.layerBtn} ${activeLayer === 'satellite' ? styles.layerActive : ''}`}
             onClick={() => handleSetLayer('satellite')}
-          >🛰️ Satellite</button>
-          <button className={styles.layerBtn} disabled title="coming soon">❄️ Snow<span className={styles.soon}> soon</span></button>
-          <button className={styles.layerBtn} disabled title="coming soon">💨 Wind<span className={styles.soon}> soon</span></button>
+          >{t.satellite}</button>
+          <button className={styles.layerBtn} disabled title="coming soon">{t.snowLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
+          <button className={styles.layerBtn} disabled title="coming soon">{t.windLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
         </div>
       </div>
 
@@ -170,17 +172,17 @@ export function ForecastMap({ location }: Props) {
             className={styles.frameSlider}
           />
           <span className={styles.frameType}>
-            {currentFrame?.type === 'nowcast' ? '🔮 Forecast' : currentFrame?.type === 'satellite' ? '🛰️ Infrared' : '📡 Observed'}
+            {currentFrame?.type === 'nowcast' ? t.forecastFrame : currentFrame?.type === 'satellite' ? t.satellite : t.observed}
           </span>
         </div>
       )}
 
       {radarError && (
-        <p className={styles.radarUnavailable}>⚠️ Radar data temporarily unavailable</p>
+      <p className={styles.radarUnavailable}>⚠️ {t.radarUnavailable}</p>
       )}
 
       <p className={styles.attribution}>
-        Radar: RainViewer (aggregates EUMETNET OPERA + global radar networks) | Map: OpenStreetMap contributors
+        {t.radarAttribution} | Map: OpenStreetMap contributors
       </p>
     </div>
   );

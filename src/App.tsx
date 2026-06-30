@@ -13,9 +13,12 @@ import { ForecastMap } from './components/ForecastMap/ForecastMap';
 import { ForecastExplanation } from './components/ForecastExplanation/ForecastExplanation';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { ErrorMessage } from './components/ErrorMessage/ErrorMessage';
+import { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher';
+import { useLanguage } from './i18n/LanguageContext';
 import styles from './App.module.css';
 
 export default function App() {
+  const { t } = useLanguage();
   const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null);
   const [forecast, setForecast] = useState<ParsedForecast | null>(null);
   const [loading, setLoading] = useState(false);
@@ -70,8 +73,11 @@ export default function App() {
     <div className={styles.app}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.title}>🌤️ ForecastApp</h1>
-          <p className={styles.subtitle}>Professional weather forecasting powered by Open-Meteo</p>
+          <h1 className={styles.title}>{t.appTitle}</h1>
+          <p className={styles.subtitle}>{t.appSubtitle}</p>
+        </div>
+        <div className={styles.langSwitcher}>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -85,16 +91,16 @@ export default function App() {
             <div className={styles.fetchRow}>
               <span className={styles.selectedInfo}>📍 {selectedLocation.displayName}</span>
               <button className={styles.fetchBtn} onClick={handleFetchWeather}>
-                🌤️ Show me the weather
+                {t.showWeather}
               </button>
             </div>
           )}
         </div>
 
-        {loading && <LoadingSpinner message="Fetching 3 weather models..." />}
+        {loading && <LoadingSpinner message={t.loadingModels} />}
 
         {error && !loading && (
-          <ErrorMessage message={error} onRetry={handleFetchWeather} />
+          <ErrorMessage message={error} onRetry={handleFetchWeather} retryLabel={t.retry} />
         )}
 
         {forecast && selectedLocation && !loading && (
@@ -110,14 +116,15 @@ export default function App() {
 
         {!hasSearched && !forecast && !loading && (
           <div className={styles.heroMessage}>
-            <p className={styles.heroText}>Search for a city or use your current location to see the weather forecast.</p>
+            <p className={styles.heroText}>{t.heroText}</p>
           </div>
         )}
       </main>
 
       <footer className={styles.footer}>
-        <p>Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Map tiles © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></p>
+        <p>{t.footerText}</p>
       </footer>
     </div>
   );
 }
+

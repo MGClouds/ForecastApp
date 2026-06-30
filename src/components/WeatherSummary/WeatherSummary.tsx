@@ -1,5 +1,7 @@
 import type { SelectedLocation } from '../../types/location';
 import type { DayForecast } from '../../types/weather';
+import { getWeatherDescriptionTranslated } from '../../utils/weatherCodeHelper';
+import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './WeatherSummary.module.css';
 
 interface Props {
@@ -9,6 +11,7 @@ interface Props {
 }
 
 export function WeatherSummary({ location, today, modelInfo }: Props) {
+  const { t } = useLanguage();
   const current = today.hours[0];
   const temps = today.hours.map(h => h.temperature);
   const high = Math.max(...temps);
@@ -16,6 +19,12 @@ export function WeatherSummary({ location, today, modelInfo }: Props) {
 
   const agreementPct = modelInfo ? Math.round(modelInfo.agreement * 100) : null;
   const filledBars = agreementPct !== null ? Math.round(modelInfo!.agreement * 6) : 0;
+
+  const averagedFromText = modelInfo
+    ? t.averagedFrom
+        .replace('{count}', modelInfo.count.toString())
+        .replace('{names}', modelInfo.names.join(' · '))
+    : '';
 
   return (
     <div className={styles.card}>
@@ -25,7 +34,7 @@ export function WeatherSummary({ location, today, modelInfo }: Props) {
           <div>
             <h2 className={styles.cityName}>{location.displayName || location.name}</h2>
             {location.elevation !== undefined && (
-              <span className={styles.elevation}>{Math.round(location.elevation)}m elevation</span>
+              <span className={styles.elevation}>{Math.round(location.elevation)}m {t.elevation}</span>
             )}
           </div>
         </div>
@@ -37,24 +46,24 @@ export function WeatherSummary({ location, today, modelInfo }: Props) {
             <span className={styles.icon}>{current.weatherIcon}</span>
             <div>
               <div className={styles.temperature}>{current.temperature}°C</div>
-              <div className={styles.description}>{current.weatherDescription}</div>
-              <div className={styles.feelsLike}>Feels like {current.feelsLike}°C</div>
+              <div className={styles.description}>{getWeatherDescriptionTranslated(current.weatherCode, t)}</div>
+              <div className={styles.feelsLike}>{t.feelsLike} {current.feelsLike}°C</div>
             </div>
           </div>
           <div className={styles.highLow}>
-            <span className={styles.high}>↑ {high}°C</span>
-            <span className={styles.low}>↓ {low}°C</span>
+            <span className={styles.high}>↑ {t.high} {high}°C</span>
+            <span className={styles.low}>↓ {t.low} {low}°C</span>
           </div>
         </div>
       )}
       {modelInfo && (
         <div className={styles.modelBar}>
           <span className={styles.modelBadge}>
-            📊 Averaged from {modelInfo.count} model{modelInfo.count !== 1 ? 's' : ''}: {modelInfo.names.join(' · ')}
+            📊 {averagedFromText}
           </span>
           {agreementPct !== null && (
             <span className={styles.modelAgreement}>
-              Model agreement:{' '}
+              {t.modelAgreement}:{' '}
               <span className={styles.bars}>
                 {'█'.repeat(filledBars)}{'░'.repeat(6 - filledBars)}
               </span>

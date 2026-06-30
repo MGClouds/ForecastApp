@@ -1,3 +1,5 @@
+import type { Translations } from '../i18n/translations';
+
 const weatherData: Record<number, { icon: string; description: string }> = {
   0:  { icon: '☀️',  description: 'Clear sky' },
   1:  { icon: '🌤️', description: 'Mainly clear' },
@@ -29,7 +31,25 @@ const weatherData: Record<number, { icon: string; description: string }> = {
   99: { icon: '⛈️',  description: 'Thunderstorm with heavy hail' },
 };
 
+// Map WMO code to translation key
+const wmoTranslationKeys: Record<number, keyof Translations> = {
+  0: 'wmo0', 1: 'wmo1', 2: 'wmo2', 3: 'wmo3',
+  45: 'wmo45', 48: 'wmo48',
+  51: 'wmo51', 53: 'wmo53', 55: 'wmo55',
+  61: 'wmo61', 63: 'wmo63', 65: 'wmo65',
+  71: 'wmo71', 73: 'wmo73', 75: 'wmo75', 77: 'wmo77',
+  80: 'wmo80', 81: 'wmo81', 82: 'wmo82',
+  85: 'wmo85', 86: 'wmo86',
+  95: 'wmo95', 96: 'wmo96', 99: 'wmo99',
+};
+
 export function getWeatherDescription(code: number): string {
+  return weatherData[code]?.description ?? 'Unknown';
+}
+
+export function getWeatherDescriptionTranslated(code: number, t: Translations): string {
+  const key = wmoTranslationKeys[code] as keyof Translations | undefined;
+  if (key && key in t) return t[key] as string;
   return weatherData[code]?.description ?? 'Unknown';
 }
 

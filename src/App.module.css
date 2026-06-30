@@ -10,6 +10,7 @@
 .header {
   padding: 32px 0 20px;
   text-align: center;
+  position: relative;
 }
 
 .headerContent {
@@ -136,4 +137,19 @@
 
 .footer a:hover {
   color: #4fc3f7;
+}
+
+.langSwitcher {
+  position: absolute;
+  top: 32px;
+  right: 0;
+}
+
+@media (max-width: 600px) {
+  .langSwitcher {
+    position: static;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
 }

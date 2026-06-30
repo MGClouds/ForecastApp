@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { SelectedLocation } from '../../types/location';
+import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './CurrentLocationButton.module.css';
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export function CurrentLocationButton({ onLocationSelect }: Props) {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,9 +44,10 @@ export function CurrentLocationButton({ onLocationSelect }: Props) {
     <div className={styles.wrapper}>
       <button className={styles.button} onClick={handleClick} disabled={loading}>
         {loading ? <span className={styles.spinner} /> : '📍'}
-        <span>{loading ? 'Detecting...' : 'Use my location'}</span>
+        <span>{loading ? '...' : t.useMyLocation}</span>
       </button>
       {error && <span className={styles.error}>{error}</span>}
     </div>
   );
 }
+
