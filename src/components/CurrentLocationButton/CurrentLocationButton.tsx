@@ -43,7 +43,7 @@ export function CurrentLocationButton({ onLocationSelect }: Props) {
   return (
     <div className={styles.wrapper}>
       <button className={styles.button} onClick={handleClick} disabled={loading}>
-        {loading ? <span className={styles.spinner} /> : '📍'}
+        {loading ? <span className={styles.spinner} /> : null}
         <span>{loading ? '...' : t.useMyLocation}</span>
       </button>
       {error && <span className={styles.error}>{error}</span>}
