@@ -1,0 +1,99 @@
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.pin {
+  font-size: 1.4rem;
+  margin-top: 2px;
+}
+
+.cityName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.elevation {
+  font-size: 0.8rem;
+  color: rgba(224, 224, 224, 0.55);
+}
+
+.dateLabel {
+  font-size: 0.9rem;
+  color: rgba(224, 224, 224, 0.65);
+  margin-left: 34px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.currentCondition {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon {
+  font-size: 3rem;
+}
+
+.temperature {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #81d4fa;
+  line-height: 1;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: rgba(224, 224, 224, 0.8);
+  margin-top: 4px;
+}
+
+.feelsLike {
+  font-size: 0.8rem;
+  color: rgba(224, 224, 224, 0.55);
+  margin-top: 2px;
+}
+
+.highLow {
+  display: flex;
+  gap: 14px;
+  font-size: 0.9rem;
+}
+
+.high {
+  color: #ef9a9a;
+  font-weight: 600;
+}
+
+.low {
+  color: #81d4fa;
+  font-weight: 600;
+}

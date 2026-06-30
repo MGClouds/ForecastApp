@@ -1,0 +1,92 @@
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.layerButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.layerBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(224, 224, 224, 0.65);
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.layerBtn:hover {
+  background: rgba(79, 195, 247, 0.1);
+  color: #e0e0e0;
+}
+
+.layerActive {
+  background: rgba(79, 195, 247, 0.15);
+  border-color: rgba(79, 195, 247, 0.4);
+  color: #4fc3f7;
+}
+
+.soon {
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+.mapWrapper {
+  height: 380px;
+  width: 100%;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px 8px;
+}
+
+.sliderLabel {
+  font-size: 0.82rem;
+  color: rgba(224, 224, 224, 0.6);
+  white-space: nowrap;
+}
+
+.slider {
+  flex: 1;
+  accent-color: #4fc3f7;
+}
+
+.placeholder {
+  font-size: 0.78rem;
+  color: rgba(224, 224, 224, 0.4);
+  padding: 8px 22px 16px;
+  font-style: italic;
+}

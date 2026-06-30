@@ -1,0 +1,81 @@
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px 28px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.high {
+  background: rgba(129, 199, 132, 0.15);
+  color: #81c784;
+  border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+.medium {
+  background: rgba(255, 213, 79, 0.12);
+  color: #ffd54f;
+  border: 1px solid rgba(255, 213, 79, 0.3);
+}
+
+.low {
+  background: rgba(255, 138, 101, 0.12);
+  color: #ff8a65;
+  border: 1px solid rgba(255, 138, 101, 0.3);
+}
+
+.summary {
+  font-size: 0.9rem;
+  color: rgba(224, 224, 224, 0.75);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.factors {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.factor {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.factorTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4fc3f7;
+  margin-bottom: 6px;
+}
+
+.factorText {
+  font-size: 0.82rem;
+  color: rgba(224, 224, 224, 0.65);
+  line-height: 1.5;
+}
