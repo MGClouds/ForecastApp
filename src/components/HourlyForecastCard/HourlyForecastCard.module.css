@@ -39,11 +39,11 @@
   line-height: 1.2;
 }
 
-/* Temp + feels-like on the same row */
+/* Temp on top, feels-like below */
 .tempRow {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .temp {
