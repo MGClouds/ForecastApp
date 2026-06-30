@@ -2,11 +2,11 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 14px;
-  padding: 16px 14px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 130px;
+  min-width: 140px;
   transition: background 0.2s, transform 0.15s;
   cursor: default;
 }
@@ -24,12 +24,13 @@
 
 .iconRow {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 8px;
 }
 
 .icon {
   font-size: 1.8rem;
+  flex-shrink: 0;
 }
 
 .desc {
@@ -38,14 +39,15 @@
   line-height: 1.2;
 }
 
+/* Temp + feels-like on the same row */
 .tempRow {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .temp {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #81d4fa;
 }
@@ -53,17 +55,27 @@
 .feelsLike {
   font-size: 0.72rem;
   color: rgba(224, 224, 224, 0.5);
+  white-space: nowrap;
+}
+
+/* Details in a 2-column grid */
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 6px;
 }
 
 .detail {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: rgba(224, 224, 224, 0.7);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
+  white-space: nowrap;
 }
 
 .amount {
   color: #4fc3f7;
   font-size: 0.72rem;
 }
+
