@@ -2,10 +2,10 @@ import { useLanguage } from '../../i18n/LanguageContext';
 import type { Language } from '../../i18n/translations';
 import styles from './LanguageSwitcher.module.css';
 
-const LANGUAGES: { code: Language; flag: string; label: string }[] = [
-  { code: 'en', flag: '🇬🇧', label: 'EN' },
-  { code: 'de', flag: '🇩🇪', label: 'DE' },
-  { code: 'pl', flag: '🇵🇱', label: 'PL' },
+const LANGUAGES: { code: Language; label: string }[] = [
+  { code: 'en', label: 'EN' },
+  { code: 'de', label: 'DE' },
+  { code: 'pl', label: 'PL' },
 ];
 
 export function LanguageSwitcher() {
@@ -17,11 +17,9 @@ export function LanguageSwitcher() {
           key={lang.code}
           className={`${styles.btn} ${language === lang.code ? styles.active : ''}`}
           onClick={() => setLanguage(lang.code)}
-          title={lang.label}
           aria-label={`Switch to ${lang.label}`}
         >
-          <span className={styles.flag}>{lang.flag}</span>
-          <span className={styles.code}>{lang.label}</span>
+          {lang.label}
         </button>
       ))}
     </div>
