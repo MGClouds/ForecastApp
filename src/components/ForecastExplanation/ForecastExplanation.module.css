@@ -6,17 +6,9 @@
   padding: 24px 28px;
 }
 
-.cardHigh {
-  border-left: 3px solid #4caf50;
-}
-
-.cardMedium {
-  border-left: 3px solid #ff9800;
-}
-
-.cardLow {
-  border-left: 3px solid #f44336;
-}
+.cardHigh   { border-left: 3px solid #4caf50; }
+.cardMedium { border-left: 3px solid #ff9800; }
+.cardLow    { border-left: 3px solid #f44336; }
 
 .header {
   display: flex;
@@ -27,6 +19,24 @@
   margin-bottom: 14px;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.score {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #e0e0e0;
+}
+
+.scoreMax {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: rgba(224, 224, 224, 0.4);
+}
+
 .title {
   font-size: 1.05rem;
   font-weight: 700;
@@ -35,34 +45,21 @@
 }
 
 .badge {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  padding: 5px 14px;
+  padding: 4px 12px;
   border-radius: 20px;
+  white-space: nowrap;
 }
 
-.high {
-  background: rgba(76, 175, 80, 0.2);
-  color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.4);
-}
-
-.medium {
-  background: rgba(255, 152, 0, 0.18);
-  color: #ffb74d;
-  border: 1px solid rgba(255, 152, 0, 0.4);
-}
-
-.low {
-  background: rgba(244, 67, 54, 0.15);
-  color: #ef9a9a;
-  border: 1px solid rgba(244, 67, 54, 0.35);
-}
+.high   { background: rgba(76,175,80,0.2);  color: #81c784; border: 1px solid rgba(76,175,80,0.4); }
+.medium { background: rgba(255,152,0,0.18); color: #ffb74d; border: 1px solid rgba(255,152,0,0.4); }
+.low    { background: rgba(244,67,54,0.15); color: #ef9a9a; border: 1px solid rgba(244,67,54,0.35);}
 
 .summary {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: rgba(224, 224, 224, 0.75);
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 18px;
 }
 
@@ -72,22 +69,88 @@
   gap: 10px;
 }
 
+/* Factor card base */
 .factor {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   padding: 14px 16px;
+  border: 1px solid transparent;
+}
+
+/* Severity variants */
+.factorPositive {
+  background: rgba(76, 175, 80, 0.07);
+  border-color: rgba(76, 175, 80, 0.2);
+}
+
+.factorNeutral {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.factorWarning {
+  background: rgba(255, 152, 0, 0.07);
+  border-color: rgba(255, 152, 0, 0.2);
+}
+
+.factorCritical {
+  background: rgba(244, 67, 54, 0.07);
+  border-color: rgba(244, 67, 54, 0.2);
+}
+
+.factorHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.factorIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .factorTitle {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #4fc3f7;
-  margin-bottom: 6px;
+  color: #e0e0e0;
+  flex: 1;
 }
 
-.factorText {
-  font-size: 0.82rem;
-  color: rgba(224, 224, 224, 0.65);
-  line-height: 1.5;
+.factorImpact {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
 }
+
+.impactPos { background: rgba(76,175,80,0.2);  color: #81c784; }
+.impactNeg { background: rgba(244,67,54,0.15); color: #ef9a9a; }
+
+.factorText {
+  font-size: 0.81rem;
+  color: rgba(224, 224, 224, 0.65);
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+/* Data value chips */
+.dataValues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dataChip {
+  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: rgba(224, 224, 224, 0.7);
+}
+
+.dataKey {
+  color: rgba(224, 224, 224, 0.45);
+}
+

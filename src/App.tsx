@@ -109,7 +109,7 @@ export default function App() {
             <ForecastTabs forecast={forecast} />
             <div className={styles.bottomGrid}>
               <ForecastMap location={selectedLocation} />
-              <ForecastExplanation today={forecast.today} location={selectedLocation} />
+              <ForecastExplanation today={forecast.today} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
             </div>
           </div>
         )}
