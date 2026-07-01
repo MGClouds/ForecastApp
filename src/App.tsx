@@ -111,7 +111,7 @@ export default function App() {
             <ForecastTabs forecast={forecast} activeTab={activeTab} onTabChange={setActiveTab} />
             <ForecastExplanation today={activeTab === 'today' ? forecast.today : forecast.tomorrow} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
             <div className={styles.bottomGrid}>
-              <ForecastMap location={selectedLocation} />
+              <ForecastMap location={selectedLocation} hours={[...forecast.today.hours, ...forecast.tomorrow.hours]} />
             </div>
           </div>
         )}

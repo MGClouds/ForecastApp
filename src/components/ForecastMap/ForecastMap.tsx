@@ -1,18 +1,20 @@
-import { useEffect, useState, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import type { SelectedLocation } from '../../types/location';
+import type { HourlyForecastItem } from '../../types/weather';
 import {
   fetchRainViewerData,
   getRadarTileUrl,
-  getSatelliteTileUrl,
   formatFrameTime,
   type RainViewerData,
   type RadarFrame,
 } from '../../services/radarService';
+import { buildAnimationFrames } from '../../services/weatherMapAnimationService';
+import type { OverlayChannel } from '../../utils/weatherOverlayGenerator';
 import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './ForecastMap.module.css';
 
@@ -34,17 +36,22 @@ function RecenterMap({ lat, lon }: { lat: number; lon: number }) {
 
 interface Props {
   location: SelectedLocation;
+  hours?: HourlyForecastItem[];
 }
 
-type ActiveLayer = 'none' | 'radar' | 'satellite';
+// 'radar' is the optional live RainViewer tile layer; the rest are channels
+// of the simulated forecast-based overlay animation (see weatherOverlayGenerator).
+type ActiveLayer = 'none' | 'radar' | OverlayChannel;
 
-export function ForecastMap({ location }: Props) {
+const ANIMATION_INTERVAL_MS = 1200;
+
+export function ForecastMap({ location, hours }: Props) {
   const { t } = useLanguage();
   const [rainviewerData, setRainviewerData] = useState<RainViewerData | null>(null);
-  const [activeLayer, setActiveLayer] = useState<ActiveLayer>('none');
+  const [activeLayer, setActiveLayer] = useState<ActiveLayer>('auto');
   const [radarFrames, setRadarFrames] = useState<RadarFrame[]>([]);
-  const [satelliteFrames, setSatelliteFrames] = useState<RadarFrame[]>([]);
-  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+  const [currentRadarFrameIndex, setCurrentRadarFrameIndex] = useState(0);
+  const [currentAnimationFrame, setCurrentAnimationFrame] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [radarError, setRadarError] = useState(false);
 
@@ -56,41 +63,70 @@ export function ForecastMap({ location }: Props) {
           ...data.radar.past.map(f => ({ ...f, type: 'past' as const })),
           ...data.radar.nowcast.map(f => ({ ...f, type: 'nowcast' as const })),
         ];
-        const satellite: RadarFrame[] = data.satellite.infrared.map(f => ({
-          ...f,
-          type: 'satellite' as const,
-        }));
         setRadarFrames(radar);
-        setSatelliteFrames(satellite);
-        setCurrentFrameIndex(Math.max(0, data.radar.past.length - 1));
+        setCurrentRadarFrameIndex(Math.max(0, data.radar.past.length - 1));
       })
       .catch(() => setRadarError(true));
   }, []);
 
+  // Channel used by the forecast overlay animation ('none'/'radar' don't need one).
+  const overlayChannel: OverlayChannel = activeLayer === 'none' || activeLayer === 'radar' ? 'auto' : activeLayer;
+  const animationFrames = useMemo(
+    () => buildAnimationFrames(hours, location, overlayChannel),
+    [hours, location, overlayChannel]
+  );
+
+  const showOverlay = activeLayer !== 'none' && activeLayer !== 'radar';
+  const showRadar = activeLayer === 'radar';
+
+  // Reset the scrubber whenever the frame set changes (e.g. new location/hours).
   useEffect(() => {
-    if (!isPlaying) return;
-    const frames = activeLayer === 'satellite' ? satelliteFrames : radarFrames;
-    if (frames.length === 0) return;
+    setCurrentAnimationFrame(0);
+    setIsPlaying(false);
+  }, [animationFrames]);
+
+  useEffect(() => {
+    if (!isPlaying || !showOverlay) return;
+    if (animationFrames.length === 0) return;
     const interval = setInterval(() => {
-      setCurrentFrameIndex(prev => (prev + 1) % frames.length);
+      setCurrentAnimationFrame(prev => {
+        if (prev >= animationFrames.length - 1) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, ANIMATION_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [isPlaying, showOverlay, animationFrames.length]);
+
+  useEffect(() => {
+    if (!isPlaying || !showRadar) return;
+    if (radarFrames.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentRadarFrameIndex(prev => (prev + 1) % radarFrames.length);
     }, 800);
     return () => clearInterval(interval);
-  }, [isPlaying, activeLayer, radarFrames, satelliteFrames]);
+  }, [isPlaying, showRadar, radarFrames]);
 
   const handleSetLayer = useCallback((layer: ActiveLayer) => {
     setActiveLayer(layer);
     setIsPlaying(false);
-    if (layer === 'satellite') {
-      setCurrentFrameIndex(0);
-    } else if (layer === 'radar') {
-      setCurrentFrameIndex(Math.max(0, radarFrames.length - (radarFrames.findIndex(f => f.type === 'nowcast') > -1 ? radarFrames.findIndex(f => f.type === 'nowcast') : radarFrames.length)));
+    if (layer === 'radar') {
+      const nowcastStart = radarFrames.findIndex(f => f.type === 'nowcast');
+      setCurrentRadarFrameIndex(nowcastStart > -1 ? nowcastStart : Math.max(0, radarFrames.length - 1));
+    } else {
+      setCurrentAnimationFrame(0);
     }
   }, [radarFrames]);
 
   const togglePlay = useCallback(() => setIsPlaying(p => !p), []);
 
-  const activeFrames = activeLayer === 'satellite' ? satelliteFrames : radarFrames;
-  const currentFrame = activeFrames[currentFrameIndex];
+  const currentRadarFrame = radarFrames[currentRadarFrameIndex];
+  const currentFrameData = animationFrames[currentAnimationFrame];
+  const frameLabel = currentAnimationFrame === 0
+    ? t.nowLabel
+    : t.hourLabel.replace('{n}', String(currentAnimationFrame));
 
   return (
     <div className={styles.card}>
@@ -102,17 +138,26 @@ export function ForecastMap({ location }: Props) {
             onClick={() => handleSetLayer('none')}
           >{t.mapOnly}</button>
           <button
+            className={`${styles.layerBtn} ${activeLayer === 'auto' ? styles.layerActive : ''}`}
+            onClick={() => handleSetLayer('auto')}
+          >{t.rainLayer}</button>
+          <button
+            className={`${styles.layerBtn} ${activeLayer === 'cloud' ? styles.layerActive : ''}`}
+            onClick={() => handleSetLayer('cloud')}
+          >{t.cloudsLayer}</button>
+          <button
+            className={`${styles.layerBtn} ${activeLayer === 'snow' ? styles.layerActive : ''}`}
+            onClick={() => handleSetLayer('snow')}
+          >{t.snowLayer}</button>
+          <button className={styles.layerBtn} disabled title="coming soon">{t.windLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
+          <button
             className={`${styles.layerBtn} ${activeLayer === 'radar' ? styles.layerActive : ''}`}
             onClick={() => handleSetLayer('radar')}
           >{t.rainRadar}</button>
-          <button
-            className={`${styles.layerBtn} ${activeLayer === 'satellite' ? styles.layerActive : ''}`}
-            onClick={() => handleSetLayer('satellite')}
-          >{t.satellite}</button>
-          <button className={styles.layerBtn} disabled title="coming soon">{t.snowLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
-          <button className={styles.layerBtn} disabled title="coming soon">{t.windLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
         </div>
       </div>
+
+      <p className={styles.disclaimer}>{t.mapDisclaimer}</p>
 
       <div className={styles.mapWrapper}>
         <MapContainer
@@ -132,53 +177,82 @@ export function ForecastMap({ location }: Props) {
               {location.latitude.toFixed(4)}°N, {location.longitude.toFixed(4)}°E
             </Popup>
           </Marker>
-          {activeLayer === 'radar' && currentFrame && rainviewerData && (
+          {showRadar && currentRadarFrame && rainviewerData && (
             <TileLayer
-              key={`radar-${currentFrame.time}`}
-              url={getRadarTileUrl(rainviewerData.host, currentFrame.path)}
+              key={`radar-${currentRadarFrame.time}`}
+              url={getRadarTileUrl(rainviewerData.host, currentRadarFrame.path)}
               opacity={0.7}
               attribution="RainViewer"
               zIndex={2}
             />
           )}
-          {activeLayer === 'satellite' && currentFrame && rainviewerData && (
-            <TileLayer
-              key={`sat-${currentFrame.time}`}
-              url={getSatelliteTileUrl(rainviewerData.host, currentFrame.path)}
-              opacity={0.7}
-              attribution="RainViewer"
-              zIndex={2}
+          {showOverlay && currentFrameData?.blobs.map(blob => (
+            <Circle
+              key={blob.id}
+              center={[blob.lat, blob.lng]}
+              radius={blob.radiusMeters}
+              pathOptions={{ color: blob.color, fillColor: blob.color, fillOpacity: blob.opacity, stroke: false }}
             />
-          )}
+          ))}
         </MapContainer>
       </div>
 
-      {(activeLayer === 'radar' || activeLayer === 'satellite') && (
+      {showRadar && (
         <div className={styles.timeControls}>
-          <button className={styles.ctrlBtn} onClick={() => setCurrentFrameIndex(i => Math.max(0, i - 1))}>⏮</button>
-          <button className={`${styles.ctrlBtn} ${styles.playBtn}`} onClick={togglePlay}>
+          <button className={styles.ctrlBtn} onClick={() => setCurrentRadarFrameIndex(i => Math.max(0, i - 1))}>⏮</button>
+          <button className={`${styles.ctrlBtn} ${styles.playBtn}`} onClick={togglePlay} aria-label={isPlaying ? t.pauseAnimation : t.playAnimation}>
             {isPlaying ? '⏸' : '▶'}
           </button>
-          <button className={styles.ctrlBtn} onClick={() => setCurrentFrameIndex(i => Math.min(activeFrames.length - 1, i + 1))}>⏭</button>
+          <button className={styles.ctrlBtn} onClick={() => setCurrentRadarFrameIndex(i => Math.min(radarFrames.length - 1, i + 1))}>⏭</button>
           <span className={styles.timeLabel}>
-            {currentFrame ? formatFrameTime(currentFrame.time) : '--:--'}
+            {currentRadarFrame ? formatFrameTime(currentRadarFrame.time) : '--:--'}
           </span>
           <input
             type="range"
             min={0}
-            max={Math.max(0, activeFrames.length - 1)}
-            value={currentFrameIndex}
-            onChange={e => setCurrentFrameIndex(Number(e.target.value))}
+            max={Math.max(0, radarFrames.length - 1)}
+            value={currentRadarFrameIndex}
+            onChange={e => setCurrentRadarFrameIndex(Number(e.target.value))}
             className={styles.frameSlider}
           />
           <span className={styles.frameType}>
-            {currentFrame?.type === 'nowcast' ? t.forecastFrame : currentFrame?.type === 'satellite' ? t.satellite : t.observed}
+            {currentRadarFrame?.type === 'nowcast' ? t.forecastFrame : t.observed}
           </span>
         </div>
       )}
 
-      {radarError && (
-      <p className={styles.radarUnavailable}>⚠️ {t.radarUnavailable}</p>
+      {showOverlay && animationFrames.length > 0 && (
+        <div className={styles.timeControls}>
+          <button
+            className={`${styles.ctrlBtn} ${styles.playBtn}`}
+            onClick={togglePlay}
+            aria-label={isPlaying ? t.pauseAnimation : t.playAnimation}
+            disabled={currentAnimationFrame >= animationFrames.length - 1 && !isPlaying}
+          >
+            {isPlaying ? '⏸' : '▶'}
+          </button>
+          <span className={styles.timeLabel}>{frameLabel}</span>
+          <input
+            type="range"
+            min={0}
+            max={Math.max(0, animationFrames.length - 1)}
+            value={currentAnimationFrame}
+            onChange={e => {
+              setIsPlaying(false);
+              setCurrentAnimationFrame(Number(e.target.value));
+            }}
+            className={styles.frameSlider}
+          />
+          <span className={styles.frameType}>{t.forecastFrame}</span>
+        </div>
+      )}
+
+      {showOverlay && animationFrames.length === 0 && (
+        <p className={styles.radarUnavailable}>⚠️ {t.noOverlayData}</p>
+      )}
+
+      {radarError && showRadar && (
+        <p className={styles.radarUnavailable}>⚠️ {t.radarUnavailable}</p>
       )}
 
       <p className={styles.attribution}>

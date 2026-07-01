@@ -24,6 +24,8 @@ export interface Translations {
   mapOnly: string;
   rainRadar: string;
   satellite: string;
+  rainLayer: string;
+  cloudsLayer: string;
   snowLayer: string;
   windLayer: string;
   observed: string;
@@ -31,6 +33,12 @@ export interface Translations {
   comingSoon: string;
   radarUnavailable: string;
   radarAttribution: string;
+  mapDisclaimer: string;
+  playAnimation: string;
+  pauseAnimation: string;
+  nowLabel: string;
+  hourLabel: string;
+  noOverlayData: string;
   loadingModels: string;
   retry: string;
   forecastConfidence: string;
@@ -105,8 +113,10 @@ export const en: Translations = {
   rainProb: 'Rain probability',
   weatherMap: '🗺️ Weather Map',
   mapOnly: '🗺️ Map only',
-  rainRadar: '🌧️ Rain Radar',
+  rainRadar: '🌧️ Radar (live)',
   satellite: '🛰️ Satellite',
+  rainLayer: '🌧️ Rain',
+  cloudsLayer: '☁️ Clouds',
   snowLayer: '❄️ Snow',
   windLayer: '💨 Wind',
   observed: '📡 Observed',
@@ -114,6 +124,12 @@ export const en: Translations = {
   comingSoon: 'coming soon',
   radarUnavailable: 'Radar data temporarily unavailable',
   radarAttribution: 'Radar: RainViewer (aggregates EUMETNET OPERA + global radar networks)',
+  mapDisclaimer: '⚠️ Forecast visualization, not live radar',
+  playAnimation: 'Play',
+  pauseAnimation: 'Pause',
+  nowLabel: 'Now',
+  hourLabel: '+{n}h',
+  noOverlayData: 'No forecast data available for the overlay animation.',
   loadingModels: 'Fetching 3 weather models...',
   retry: 'Retry',
   forecastConfidence: '🔍 Forecast Confidence Analysis',
@@ -172,8 +188,10 @@ export const de: Translations = {
   rainProb: 'Regenwahrscheinlichkeit',
   weatherMap: '🗺️ Wetterkarte',
   mapOnly: '🗺️ Nur Karte',
-  rainRadar: '🌧️ Regenradar',
+  rainRadar: '🌧️ Radar (live)',
   satellite: '🛰️ Satellit',
+  rainLayer: '🌧️ Regen',
+  cloudsLayer: '☁️ Wolken',
   snowLayer: '❄️ Schnee',
   windLayer: '💨 Wind',
   observed: '📡 Gemessen',
@@ -181,6 +199,12 @@ export const de: Translations = {
   comingSoon: 'bald verfügbar',
   radarUnavailable: 'Radardaten vorübergehend nicht verfügbar',
   radarAttribution: 'Radar: RainViewer (beinhaltet EUMETNET OPERA + globale Radarnetzwerke)',
+  mapDisclaimer: '⚠️ Vorhersage-Visualisierung, kein Live-Radar',
+  playAnimation: 'Abspielen',
+  pauseAnimation: 'Pause',
+  nowLabel: 'Jetzt',
+  hourLabel: '+{n}h',
+  noOverlayData: 'Keine Vorhersagedaten für die Animation verfügbar.',
   loadingModels: '3 Wettermodelle werden geladen...',
   retry: 'Erneut versuchen',
   forecastConfidence: '🔍 Vorhersage-Konfidenzanalyse',
@@ -239,8 +263,10 @@ export const pl: Translations = {
   rainProb: 'Prawdopodobieństwo deszczu',
   weatherMap: '🗺️ Mapa Pogody',
   mapOnly: '🗺️ Tylko mapa',
-  rainRadar: '🌧️ Radar opadów',
+  rainRadar: '🌧️ Radar (na żywo)',
   satellite: '🛰️ Satelita',
+  rainLayer: '🌧️ Deszcz',
+  cloudsLayer: '☁️ Chmury',
   snowLayer: '❄️ Śnieg',
   windLayer: '💨 Wiatr',
   observed: '📡 Obserwowany',
@@ -248,6 +274,12 @@ export const pl: Translations = {
   comingSoon: 'wkrótce',
   radarUnavailable: 'Dane radarowe chwilowo niedostępne',
   radarAttribution: 'Radar: RainViewer (agreguje EUMETNET OPERA + globalne sieci radarów)',
+  mapDisclaimer: '⚠️ Wizualizacja prognozy, nie radar na żywo',
+  playAnimation: 'Odtwórz',
+  pauseAnimation: 'Pauza',
+  nowLabel: 'Teraz',
+  hourLabel: '+{n}h',
+  noOverlayData: 'Brak danych prognozy dla animacji nakładki.',
   loadingModels: 'Pobieranie 3 modeli pogodowych...',
   retry: 'Spróbuj ponownie',
   forecastConfidence: '🔍 Analiza pewności prognozy',
