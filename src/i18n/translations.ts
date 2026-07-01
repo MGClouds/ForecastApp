@@ -54,6 +54,12 @@ export interface Translations {
   mediumCertainty: string;
   lowCertainty: string;
   relativeImpact: string;
+  timeRangeFilterTitle: string;
+  timeRangeFilterExplanation: string;
+  startTimeLabel: string;
+  endTimeLabel: string;
+  timeRangeInvalid: string;
+  analyzingHoursLabel: string;
   wmo0: string;
   wmo1: string;
   wmo2: string;
@@ -153,6 +159,12 @@ export const en: Translations = {
   mediumCertainty: '⚠️ Medium Certainty',
   lowCertainty: '🟠 Low Certainty',
   relativeImpact: 'Relative contribution to the overall confidence score',
+  timeRangeFilterTitle: '⏱️ Analysis window',
+  timeRangeFilterExplanation: 'Narrow the analysis to a specific part of the day. The certainty score, summary, and factors below will recalculate using only the hours in this range.',
+  startTimeLabel: 'Start time',
+  endTimeLabel: 'End time',
+  timeRangeInvalid: 'End time must be after start time.',
+  analyzingHoursLabel: 'Analyzing {n} hour(s): {start} - {end}',
   wmo0: 'Clear sky', wmo1: 'Mainly clear', wmo2: 'Partly cloudy', wmo3: 'Overcast',
   wmo45: 'Fog', wmo48: 'Depositing rime fog',
   wmo51: 'Light drizzle', wmo53: 'Moderate drizzle', wmo55: 'Dense drizzle',
@@ -236,6 +248,12 @@ export const de: Translations = {
   mediumCertainty: '⚠️ Mittlere Sicherheit',
   lowCertainty: '🟠 Geringe Sicherheit',
   relativeImpact: 'Relativer Beitrag zum Gesamt-Konfidenzwert',
+  timeRangeFilterTitle: '⏱️ Analysezeitraum',
+  timeRangeFilterExplanation: 'Grenzen Sie die Analyse auf einen bestimmten Tagesabschnitt ein. Der Sicherheitswert, die Zusammenfassung und die Faktoren unten werden neu berechnet, basierend nur auf den Stunden in diesem Zeitraum.',
+  startTimeLabel: 'Startzeit',
+  endTimeLabel: 'Endzeit',
+  timeRangeInvalid: 'Die Endzeit muss nach der Startzeit liegen.',
+  analyzingHoursLabel: 'Analyse von {n} Stunde(n): {start} - {end}',
   wmo0: 'Klarer Himmel', wmo1: 'Überwiegend klar', wmo2: 'Teilweise bewölkt', wmo3: 'Bedeckt',
   wmo45: 'Nebel', wmo48: 'Gefrierender Nebel',
   wmo51: 'Leichter Nieselregen', wmo53: 'Mäßiger Nieselregen', wmo55: 'Starker Nieselregen',
@@ -319,6 +337,12 @@ export const pl: Translations = {
   mediumCertainty: '⚠️ Średnia pewność',
   lowCertainty: '🟠 Niska pewność',
   relativeImpact: 'Względny wkład w ogólny wynik pewności',
+  timeRangeFilterTitle: '⏱️ Zakres analizy',
+  timeRangeFilterExplanation: 'Zawęź analizę do wybranej części dnia. Poniższy wynik pewności, podsumowanie i czynniki zostaną przeliczone wyłącznie na podstawie godzin z tego zakresu.',
+  startTimeLabel: 'Godzina początkowa',
+  endTimeLabel: 'Godzina końcowa',
+  timeRangeInvalid: 'Godzina końcowa musi być późniejsza niż początkowa.',
+  analyzingHoursLabel: 'Analiza {n} godz.: {start} - {end}',
   wmo0: 'Bezchmurnie', wmo1: 'Przeważnie pogodnie', wmo2: 'Częściowe zachmurzenie', wmo3: 'Pochmurno',
   wmo45: 'Mgła', wmo48: 'Marznąca mgła',
   wmo51: 'Lekka mżawka', wmo53: 'Umiarkowana mżawka', wmo55: 'Gęsta mżawka',
