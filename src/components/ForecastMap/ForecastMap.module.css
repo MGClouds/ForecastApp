@@ -177,8 +177,8 @@
  * complexity/risk of a custom ImageOverlay or SVG pattern layer.
  */
 .rainStreak {
-  stroke: rgba(255, 255, 255, 0.35) !important;
-  stroke-width: 2px !important;
+  stroke: rgba(20, 20, 20, 0.5) !important;
+  stroke-width: 2.5px !important;
   stroke-dasharray: 6 10;
   animation: rain-streak-move 1.2s linear infinite, rain-streak-pulse 2.4s ease-in-out infinite;
 }

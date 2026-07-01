@@ -20,8 +20,8 @@ export interface OverlayBlob {
 /** Which slice of the forecast data the overlay should visualize. */
 export type OverlayChannel = 'auto' | 'rain' | 'cloud' | 'snow';
 
-const MIN_RADIUS_M = 8000;
-const MAX_RADIUS_M = 40000;
+const MIN_RADIUS_M = 9000;
+const MAX_RADIUS_M = 48000;
 
 /**
  * Scales a radius between MIN_RADIUS_M and MAX_RADIUS_M based on how far a
@@ -107,8 +107,8 @@ export function generateOverlayBlob(
       lng,
       radiusMeters: scaleRadius(rainAmount, 20),
       intensity: 'very-heavy-rain',
-      color: 'rgba(220,50,50,0.6)',
-      opacity: 0.6,
+      color: 'rgba(180,20,20,0.65)',
+      opacity: 0.65,
       valueMmPerHour: rainAmount,
     };
   }
@@ -119,8 +119,8 @@ export function generateOverlayBlob(
       lng,
       radiusMeters: scaleRadius(rainAmount, 10),
       intensity: 'heavy-rain',
-      color: 'rgba(240,130,40,0.55)',
-      opacity: 0.55,
+      color: 'rgba(220,40,40,0.6)',
+      opacity: 0.6,
       valueMmPerHour: rainAmount,
     };
   }
@@ -131,8 +131,8 @@ export function generateOverlayBlob(
       lng,
       radiusMeters: scaleRadius(rainAmount, 4),
       intensity: 'moderate-rain',
-      color: 'rgba(240,200,60,0.5)',
-      opacity: 0.5,
+      color: 'rgba(240,140,30,0.55)',
+      opacity: 0.55,
       valueMmPerHour: rainAmount,
     };
   }
@@ -143,7 +143,7 @@ export function generateOverlayBlob(
       lng,
       radiusMeters: scaleRadius(Math.max(rainAmount, precipitationProbability / 100), 1),
       intensity: 'light-rain',
-      color: 'rgba(76,187,86,0.45)',
+      color: 'rgba(70,180,80,0.45)',
       opacity: 0.45,
       valueMmPerHour: rainAmount,
     };

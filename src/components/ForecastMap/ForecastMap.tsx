@@ -64,7 +64,7 @@ function getBlobPopupInfo(blob: OverlayBlob, t: Translations): { icon: string; l
 // of the simulated forecast-based overlay animation (see weatherOverlayGenerator).
 type ActiveLayer = 'none' | 'radar' | OverlayChannel;
 
-const ANIMATION_INTERVAL_MS = 1200;
+const ANIMATION_INTERVAL_MS = 2600;
 
 export function ForecastMap({ location, hours }: Props) {
   const { t } = useLanguage();
@@ -188,10 +188,11 @@ export function ForecastMap({ location, hours }: Props) {
           scrollWheelZoom={false}
         >
           <TileLayer
-            attribution='Tiles &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) - Data: <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM'
-            url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-            maxZoom={17}
-            maxNativeZoom={17}
+            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            subdomains="abcd"
+            maxZoom={20}
+            maxNativeZoom={20}
           />
           <RecenterMap lat={location.latitude} lon={location.longitude} />
           <Marker position={[location.latitude, location.longitude]}>
@@ -295,7 +296,7 @@ export function ForecastMap({ location, hours }: Props) {
       )}
 
       <p className={styles.attribution}>
-        {t.radarAttribution} | Map: OpenTopoMap (CC-BY-SA), OpenStreetMap contributors, SRTM
+        {t.radarAttribution} | Map: CARTO Voyager, OpenStreetMap contributors
       </p>
     </div>
   );
