@@ -33,6 +33,7 @@ export interface Translations {
   comingSoon: string;
   radarUnavailable: string;
   radarAttribution: string;
+  mapDataAttribution: string;
   mapDisclaimer: string;
   playAnimation: string;
   pauseAnimation: string;
@@ -131,6 +132,7 @@ export const en: Translations = {
   comingSoon: 'coming soon',
   radarUnavailable: 'Radar data temporarily unavailable',
   radarAttribution: 'Radar: RainViewer (aggregates EUMETNET OPERA + global radar networks)',
+  mapDataAttribution: 'Forecast-based visualization from Open-Meteo model data | Map: CARTO Voyager, OpenStreetMap contributors',
   mapDisclaimer: '⚠️ Forecast visualization, not live radar',
   playAnimation: 'Play',
   pauseAnimation: 'Pause',
@@ -213,6 +215,7 @@ export const de: Translations = {
   comingSoon: 'bald verfügbar',
   radarUnavailable: 'Radardaten vorübergehend nicht verfügbar',
   radarAttribution: 'Radar: RainViewer (beinhaltet EUMETNET OPERA + globale Radarnetzwerke)',
+  mapDataAttribution: 'Prognosebasierte Visualisierung aus Open-Meteo-Modelldaten | Karte: CARTO Voyager, OpenStreetMap-Mitwirkende',
   mapDisclaimer: '⚠️ Vorhersage-Visualisierung, kein Live-Radar',
   playAnimation: 'Abspielen',
   pauseAnimation: 'Pause',
@@ -295,6 +298,7 @@ export const pl: Translations = {
   comingSoon: 'wkrótce',
   radarUnavailable: 'Dane radarowe chwilowo niedostępne',
   radarAttribution: 'Radar: RainViewer (agreguje EUMETNET OPERA + globalne sieci radarów)',
+  mapDataAttribution: 'Wizualizacja oparta na prognozie z danych modelu Open-Meteo | Mapa: CARTO Voyager, współtwórcy OpenStreetMap',
   mapDisclaimer: '⚠️ Wizualizacja prognozy, nie radar na żywo',
   playAnimation: 'Odtwórz',
   pauseAnimation: 'Pauza',

@@ -50,17 +50,20 @@ export function generateOverlayBlob(
   const snowfall = hour.snowfall ?? 0;
   const cloudCover = hour.cloudCover ?? 0;
 
-  // "Clouds" channel always reflects cloud cover regardless of precipitation.
+  // "Clouds" channel always reflects cloud cover regardless of precipitation,
+  // darkening from light gray (scattered) to dark gray (heavy overcast).
   if (channel === 'cloud') {
     if (cloudCover < 10) return null;
-    const opacity = (cloudCover / 100) * 0.35;
+    const t = Math.min(1, cloudCover / 100);
+    const gray = Math.round(215 - t * 105);
+    const opacity = 0.2 + t * 0.5;
     return {
       id,
       lat,
       lng,
       radiusMeters: scaleRadius(cloudCover, 100),
       intensity: 'cloud',
-      color: `rgba(200,200,210,${opacity.toFixed(2)})`,
+      color: `rgba(${gray},${gray},${gray + 8},${opacity.toFixed(2)})`,
       opacity,
       valueMmPerHour: cloudCover,
     };
@@ -152,16 +155,19 @@ export function generateOverlayBlob(
   // The "rain" channel only ever shows precipitation, never a cloud fallback.
   if (channel === 'rain') return null;
 
-  // No precipitation - only show a faint cloud blob when cover is notable.
-  if (cloudCover >= 40) {
-    const opacity = (cloudCover / 100) * 0.35;
+  // No precipitation - show a cloud blob whose shade darkens with cover
+  // (light gray for scattered cloud, dark gray for heavy overcast).
+  if (cloudCover >= 25) {
+    const t = Math.min(1, (cloudCover - 25) / 75); // 0 at 25%, 1 at 100%
+    const gray = Math.round(215 - t * 105); // 215 (light) -> 110 (dark overcast)
+    const opacity = 0.22 + t * 0.45; // 0.22 -> 0.67
     return {
       id,
       lat,
       lng,
       radiusMeters: scaleRadius(cloudCover, 100),
       intensity: 'cloud',
-      color: `rgba(200,200,210,${opacity.toFixed(2)})`,
+      color: `rgba(${gray},${gray},${gray + 8},${opacity.toFixed(2)})`,
       opacity,
       valueMmPerHour: cloudCover,
     };
