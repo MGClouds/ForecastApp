@@ -13,6 +13,8 @@ export interface OverlayBlob {
   intensity: 'cloud' | 'light-rain' | 'moderate-rain' | 'heavy-rain' | 'very-heavy-rain' | 'snow';
   color: string;
   opacity: number;
+  /** Approximate mm/h (or cm/h for snow) figure the blob was derived from, for display in popups. */
+  valueMmPerHour?: number;
 }
 
 /** Which slice of the forecast data the overlay should visualize. */
@@ -60,6 +62,7 @@ export function generateOverlayBlob(
       intensity: 'cloud',
       color: `rgba(200,200,210,${opacity.toFixed(2)})`,
       opacity,
+      valueMmPerHour: cloudCover,
     };
   }
 
@@ -74,6 +77,7 @@ export function generateOverlayBlob(
       intensity: 'snow',
       color: 'rgba(120,180,240,0.5)',
       opacity: 0.5,
+      valueMmPerHour: snowfall,
     };
   }
 
@@ -88,6 +92,7 @@ export function generateOverlayBlob(
       intensity: 'snow',
       color: 'rgba(120,180,240,0.5)',
       opacity: 0.5,
+      valueMmPerHour: snowfall,
     };
   }
 
@@ -104,6 +109,7 @@ export function generateOverlayBlob(
       intensity: 'very-heavy-rain',
       color: 'rgba(220,50,50,0.6)',
       opacity: 0.6,
+      valueMmPerHour: rainAmount,
     };
   }
   if (rainAmount > 4) {
@@ -115,6 +121,7 @@ export function generateOverlayBlob(
       intensity: 'heavy-rain',
       color: 'rgba(240,130,40,0.55)',
       opacity: 0.55,
+      valueMmPerHour: rainAmount,
     };
   }
   if (rainAmount > 1) {
@@ -126,6 +133,7 @@ export function generateOverlayBlob(
       intensity: 'moderate-rain',
       color: 'rgba(240,200,60,0.5)',
       opacity: 0.5,
+      valueMmPerHour: rainAmount,
     };
   }
   if (rainAmount > 0 || precipitationProbability >= 20) {
@@ -137,6 +145,7 @@ export function generateOverlayBlob(
       intensity: 'light-rain',
       color: 'rgba(76,187,86,0.45)',
       opacity: 0.45,
+      valueMmPerHour: rainAmount,
     };
   }
 
@@ -154,6 +163,7 @@ export function generateOverlayBlob(
       intensity: 'cloud',
       color: `rgba(200,200,210,${opacity.toFixed(2)})`,
       opacity,
+      valueMmPerHour: cloudCover,
     };
   }
 

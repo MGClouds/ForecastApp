@@ -16,7 +16,18 @@
  * - HDF5/BUFR format parsing
  * - Custom tile generation pipeline
  * RainViewer effectively provides this data in a ready-to-use tile format.
+ *
+ * IMPORTANT: RainViewer's tile server only renders native imagery up to
+ * zoom 7 - verified empirically, requesting z8+ returns a placeholder PNG
+ * with the text "Zoom Level Not Supported" instead of an HTTP error, which
+ * otherwise renders as a broken-looking gray tile on the map. Consumers
+ * should pass `RAINVIEWER_MAX_NATIVE_ZOOM` as the Leaflet TileLayer's
+ * `maxNativeZoom` so Leaflet stops requesting unsupported zooms and instead
+ * automatically upscales the last valid native tile.
  */
+
+/** Highest zoom level at which RainViewer returns real (non-placeholder) tiles. */
+export const RAINVIEWER_MAX_NATIVE_ZOOM = 7;
 
 export interface RadarFrame {
   time: number;

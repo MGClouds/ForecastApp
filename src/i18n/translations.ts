@@ -39,6 +39,13 @@ export interface Translations {
   nowLabel: string;
   hourLabel: string;
   noOverlayData: string;
+  overlayForecastSuffix: string;
+  intensityCloud: string;
+  intensityLightRain: string;
+  intensityModerateRain: string;
+  intensityHeavyRain: string;
+  intensityVeryHeavyRain: string;
+  intensitySnow: string;
   loadingModels: string;
   retry: string;
   forecastConfidence: string;
@@ -130,6 +137,13 @@ export const en: Translations = {
   nowLabel: 'Now',
   hourLabel: '+{n}h',
   noOverlayData: 'No forecast data available for the overlay animation.',
+  overlayForecastSuffix: '(Forecast)',
+  intensityCloud: 'Cloud',
+  intensityLightRain: 'Light Rain',
+  intensityModerateRain: 'Moderate Rain',
+  intensityHeavyRain: 'Heavy Rain',
+  intensityVeryHeavyRain: 'Very Heavy Rain',
+  intensitySnow: 'Snow',
   loadingModels: 'Fetching 3 weather models...',
   retry: 'Retry',
   forecastConfidence: '🔍 Forecast Confidence Analysis',
@@ -205,6 +219,13 @@ export const de: Translations = {
   nowLabel: 'Jetzt',
   hourLabel: '+{n}h',
   noOverlayData: 'Keine Vorhersagedaten für die Animation verfügbar.',
+  overlayForecastSuffix: '(Vorhersage)',
+  intensityCloud: 'Wolken',
+  intensityLightRain: 'Leichter Regen',
+  intensityModerateRain: 'Mäßiger Regen',
+  intensityHeavyRain: 'Starker Regen',
+  intensityVeryHeavyRain: 'Sehr starker Regen',
+  intensitySnow: 'Schnee',
   loadingModels: '3 Wettermodelle werden geladen...',
   retry: 'Erneut versuchen',
   forecastConfidence: '🔍 Vorhersage-Konfidenzanalyse',
@@ -280,6 +301,13 @@ export const pl: Translations = {
   nowLabel: 'Teraz',
   hourLabel: '+{n}h',
   noOverlayData: 'Brak danych prognozy dla animacji nakładki.',
+  overlayForecastSuffix: '(Prognoza)',
+  intensityCloud: 'Chmury',
+  intensityLightRain: 'Lekki deszcz',
+  intensityModerateRain: 'Umiarkowany deszcz',
+  intensityHeavyRain: 'Silny deszcz',
+  intensityVeryHeavyRain: 'Bardzo silny deszcz',
+  intensitySnow: 'Śnieg',
   loadingModels: 'Pobieranie 3 modeli pogodowych...',
   retry: 'Spróbuj ponownie',
   forecastConfidence: '🔍 Analiza pewności prognozy',

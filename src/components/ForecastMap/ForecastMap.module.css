@@ -168,3 +168,33 @@
   background: linear-gradient(to right, #add8e6, #0000ff, #00ff00, #ffff00, #ff0000);
 }
 
+/*
+ * Lightweight "falling rain" visual cue for rain-intensity overlay blobs.
+ * Leaflet renders Circle as an SVG <path>; we can't easily clip a diagonal
+ * streak texture into an arbitrary path shape without extra SVG defs, so we
+ * approximate the effect with an animated dash pattern on the circle's edge
+ * plus a subtle pulsing fill - reads as "moving precipitation" without the
+ * complexity/risk of a custom ImageOverlay or SVG pattern layer.
+ */
+.rainStreak {
+  stroke: rgba(255, 255, 255, 0.35) !important;
+  stroke-width: 2px !important;
+  stroke-dasharray: 6 10;
+  animation: rain-streak-move 1.2s linear infinite, rain-streak-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes rain-streak-move {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes rain-streak-pulse {
+  0%, 100% {
+    fill-opacity: 0.9;
+  }
+  50% {
+    fill-opacity: 0.55;
+  }
+}
+

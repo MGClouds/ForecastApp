@@ -10,12 +10,14 @@ import {
   fetchRainViewerData,
   getRadarTileUrl,
   formatFrameTime,
+  RAINVIEWER_MAX_NATIVE_ZOOM,
   type RainViewerData,
   type RadarFrame,
 } from '../../services/radarService';
 import { buildAnimationFrames } from '../../services/weatherMapAnimationService';
-import type { OverlayChannel } from '../../utils/weatherOverlayGenerator';
+import type { OverlayBlob, OverlayChannel } from '../../utils/weatherOverlayGenerator';
 import { useLanguage } from '../../i18n/LanguageContext';
+import type { Translations } from '../../i18n/translations';
 import styles from './ForecastMap.module.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +39,25 @@ function RecenterMap({ lat, lon }: { lat: number; lon: number }) {
 interface Props {
   location: SelectedLocation;
   hours?: HourlyForecastItem[];
+}
+
+/** Emoji + translated label shown in each overlay blob's popup. */
+function getBlobPopupInfo(blob: OverlayBlob, t: Translations): { icon: string; label: string; valueText: string } {
+  switch (blob.intensity) {
+    case 'snow':
+      return { icon: '❄️', label: t.intensitySnow, valueText: blob.valueMmPerHour !== undefined ? `${blob.valueMmPerHour.toFixed(1)} cm/h` : '' };
+    case 'light-rain':
+      return { icon: '🌧️', label: t.intensityLightRain, valueText: blob.valueMmPerHour !== undefined ? `${blob.valueMmPerHour.toFixed(1)} mm/h` : '' };
+    case 'moderate-rain':
+      return { icon: '🌧️', label: t.intensityModerateRain, valueText: blob.valueMmPerHour !== undefined ? `${blob.valueMmPerHour.toFixed(1)} mm/h` : '' };
+    case 'heavy-rain':
+      return { icon: '🌧️', label: t.intensityHeavyRain, valueText: blob.valueMmPerHour !== undefined ? `${blob.valueMmPerHour.toFixed(1)} mm/h` : '' };
+    case 'very-heavy-rain':
+      return { icon: '⛈️', label: t.intensityVeryHeavyRain, valueText: blob.valueMmPerHour !== undefined ? `${blob.valueMmPerHour.toFixed(1)} mm/h` : '' };
+    case 'cloud':
+    default:
+      return { icon: '☁️', label: t.intensityCloud, valueText: blob.valueMmPerHour !== undefined ? `${Math.round(blob.valueMmPerHour)}%` : '' };
+  }
 }
 
 // 'radar' is the optional live RainViewer tile layer; the rest are channels
@@ -167,8 +188,10 @@ export function ForecastMap({ location, hours }: Props) {
           scrollWheelZoom={false}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='Tiles &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) - Data: <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM'
+            url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+            maxZoom={17}
+            maxNativeZoom={17}
           />
           <RecenterMap lat={location.latitude} lon={location.longitude} />
           <Marker position={[location.latitude, location.longitude]}>
@@ -184,16 +207,32 @@ export function ForecastMap({ location, hours }: Props) {
               opacity={0.7}
               attribution="RainViewer"
               zIndex={2}
+              maxNativeZoom={RAINVIEWER_MAX_NATIVE_ZOOM}
             />
           )}
-          {showOverlay && currentFrameData?.blobs.map(blob => (
-            <Circle
-              key={blob.id}
-              center={[blob.lat, blob.lng]}
-              radius={blob.radiusMeters}
-              pathOptions={{ color: blob.color, fillColor: blob.color, fillOpacity: blob.opacity, stroke: false }}
-            />
-          ))}
+          {showOverlay && currentFrameData?.blobs.map(blob => {
+            const isRain = blob.intensity.endsWith('rain');
+            const popupInfo = getBlobPopupInfo(blob, t);
+            return (
+              <Circle
+                key={blob.id}
+                center={[blob.lat, blob.lng]}
+                radius={blob.radiusMeters}
+                pathOptions={{
+                  color: blob.color,
+                  fillColor: blob.color,
+                  fillOpacity: blob.opacity,
+                  stroke: false,
+                  className: isRain ? styles.rainStreak : undefined,
+                }}
+              >
+                <Popup>
+                  {popupInfo.icon} {popupInfo.label}
+                  {popupInfo.valueText ? ` — ${popupInfo.valueText}` : ''} {t.overlayForecastSuffix}
+                </Popup>
+              </Circle>
+            );
+          })}
         </MapContainer>
       </div>
 
@@ -256,7 +295,7 @@ export function ForecastMap({ location, hours }: Props) {
       )}
 
       <p className={styles.attribution}>
-        {t.radarAttribution} | Map: OpenStreetMap contributors
+        {t.radarAttribution} | Map: OpenTopoMap (CC-BY-SA), OpenStreetMap contributors, SRTM
       </p>
     </div>
   );
