@@ -5,6 +5,7 @@ export interface Translations {
   appSubtitle: string;
   searchPlaceholder: string;
   useMyLocation: string;
+  currentLocationFallback: string;
   showWeather: string;
   searching: string;
   noResults: string;
@@ -110,6 +111,7 @@ export const en: Translations = {
   appSubtitle: 'Professional weather forecasting · 3 model ensemble',
   searchPlaceholder: 'Search city, town, village...',
   useMyLocation: '📍 Use my location',
+  currentLocationFallback: 'Current Location',
   showWeather: '🌤️ Show me the weather',
   searching: 'Searching...',
   noResults: 'No results found',
@@ -199,6 +201,7 @@ export const de: Translations = {
   appSubtitle: 'Professionelle Wettervorhersage · 3-Modell-Ensemble',
   searchPlaceholder: 'Stadt, Gemeinde, Dorf suchen...',
   useMyLocation: '📍 Meinen Standort verwenden',
+  currentLocationFallback: 'Aktueller Standort',
   showWeather: '🌤️ Wetter anzeigen',
   searching: 'Suche...',
   noResults: 'Keine Ergebnisse gefunden',
@@ -288,6 +291,7 @@ export const pl: Translations = {
   appSubtitle: 'Profesjonalna prognoza pogody · Ensemble 3 modeli',
   searchPlaceholder: 'Szukaj miasta, wsi, miejscowości...',
   useMyLocation: '📍 Użyj mojej lokalizacji',
+  currentLocationFallback: 'Aktualna lokalizacja',
   showWeather: '🌤️ Pokaż pogodę',
   searching: 'Szukanie...',
   noResults: 'Brak wyników',

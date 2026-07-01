@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { SelectedLocation } from '../../types/location';
+import { reverseGeocode } from '../../services/geocodingService';
 import { useLanguage } from '../../i18n/LanguageContext';
 import styles from './CurrentLocationButton.module.css';
 
@@ -20,15 +21,23 @@ export function CurrentLocationButton({ onLocationSelect }: Props) {
     setLoading(true);
     setError(null);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const { latitude, longitude } = pos.coords;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Try to resolve a human-readable place name (city, village, or
+        // named natural feature like a mountain/lake) instead of the
+        // generic "Current Location" label.
+        const place = await reverseGeocode(latitude, longitude);
+        const name = place?.name ?? t.currentLocationFallback;
+
         onLocationSelect({
-          name: 'Current Location',
-          displayName: 'Current Location',
+          name,
+          displayName: name,
           latitude,
           longitude,
-          country: '',
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          country: place?.country ?? '',
+          timezone,
         });
         setLoading(false);
       },
