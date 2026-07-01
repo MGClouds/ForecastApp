@@ -73,7 +73,7 @@ const ANIMATION_INTERVAL_MS = 255;
 export function ForecastMap({ location, hours }: Props) {
   const { t } = useLanguage();
   const [rainviewerData, setRainviewerData] = useState<RainViewerData | null>(null);
-  const [activeLayer, setActiveLayer] = useState<ActiveLayer>('auto');
+  const [activeLayer, setActiveLayer] = useState<ActiveLayer>('cloud');
   const [radarFrames, setRadarFrames] = useState<RadarFrame[]>([]);
   const [currentRadarFrameIndex, setCurrentRadarFrameIndex] = useState(0);
   const [currentAnimationFrame, setCurrentAnimationFrame] = useState(0);
@@ -164,17 +164,10 @@ export function ForecastMap({ location, hours }: Props) {
             onClick={() => handleSetLayer('none')}
           >{t.mapOnly}</button>
           <button
-            className={`${styles.layerBtn} ${activeLayer === 'auto' ? styles.layerActive : ''}`}
-            onClick={() => handleSetLayer('auto')}
-          >{t.rainLayer}</button>
-          <button
             className={`${styles.layerBtn} ${activeLayer === 'cloud' ? styles.layerActive : ''}`}
             onClick={() => handleSetLayer('cloud')}
           >{t.cloudsLayer}</button>
-          <button
-            className={`${styles.layerBtn} ${activeLayer === 'snow' ? styles.layerActive : ''}`}
-            onClick={() => handleSetLayer('snow')}
-          >{t.snowLayer}</button>
+          <button className={styles.layerBtn} disabled title="coming soon">{t.snowLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
           <button className={styles.layerBtn} disabled title="coming soon">{t.windLayer}<span className={styles.soon}> {t.comingSoon}</span></button>
           <button
             className={`${styles.layerBtn} ${activeLayer === 'radar' ? styles.layerActive : ''}`}
