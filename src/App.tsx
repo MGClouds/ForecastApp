@@ -107,9 +107,9 @@ export default function App() {
           <div className={styles.forecastGrid}>
             <WeatherSummary location={selectedLocation} today={forecast.today} modelInfo={modelInfo} />
             <ForecastTabs forecast={forecast} />
+            <ForecastExplanation today={forecast.today} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
             <div className={styles.bottomGrid}>
               <ForecastMap location={selectedLocation} />
-              <ForecastExplanation today={forecast.today} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
             </div>
           </div>
         )}
