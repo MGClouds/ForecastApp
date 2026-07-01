@@ -127,6 +127,12 @@
   border-color: rgba(100, 181, 246, 0.6);
 }
 
+.timeSelect option {
+  color: #1a1a2e;
+  background: #ffffff;
+  font-weight: 600;
+}
+
 .timeFilterExplanation {
   font-size: 0.78rem;
   color: rgba(224, 224, 224, 0.5);
