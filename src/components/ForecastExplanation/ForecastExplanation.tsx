@@ -18,8 +18,8 @@ const SEVERITY_CLASS: Record<FactorSeverity, string> = {
 };
 
 export function ForecastExplanation({ today, location, modelAgreement }: Props) {
-  const { t } = useLanguage();
-  const result = analyzeConfidence(today.hours, location, modelAgreement);
+  const { t, language } = useLanguage();
+  const result = analyzeConfidence(today.hours, location, modelAgreement, language);
 
   const levelClass      = result.level === 'high' ? styles.high      : result.level === 'medium' ? styles.medium      : styles.low;
   const cardLevelClass  = result.level === 'high' ? styles.cardHigh  : result.level === 'medium' ? styles.cardMedium  : styles.cardLow;
