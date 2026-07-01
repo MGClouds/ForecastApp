@@ -46,6 +46,14 @@ export function ForecastExplanation({ today, location, modelAgreement }: Props) 
               <span className={`${styles.factorImpact} ${f.scoreImpact >= 0 ? styles.impactPos : styles.impactNeg}`}>
                 {f.scoreImpact >= 0 ? `+${f.scoreImpact}` : f.scoreImpact}
               </span>
+              {f.impactPercent !== 0 && (
+                <span
+                  className={`${styles.impactBadge} ${f.impactPercent >= 0 ? styles.impactPos : styles.impactNeg}`}
+                  title={t.relativeImpact}
+                >
+                  {f.impactPercent >= 0 ? `+${f.impactPercent}%` : `${f.impactPercent}%`}
+                </span>
+              )}
             </div>
             <p className={styles.factorText}>{f.description}</p>
             <div className={styles.dataValues}>

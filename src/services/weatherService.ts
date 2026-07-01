@@ -18,7 +18,13 @@ export async function fetchWeatherForecast(lat: number, lon: number, timezone: s
       'cloud_cover',
       'wind_speed_10m',
       'wind_direction_10m',
-      'weather_code'
+      'weather_code',
+      'surface_pressure',
+      'relative_humidity_2m',
+      'visibility',
+      'cape',
+      'freezing_level_height',
+      'wind_gusts_10m'
     ].join(','),
     forecast_days: '2',
     timezone: timezone,
@@ -27,6 +33,11 @@ export async function fetchWeatherForecast(lat: number, lon: number, timezone: s
   const response = await fetch(`${BASE_URL}?${params}`);
   if (!response.ok) throw new Error('Failed to fetch weather data');
   return response.json();
+}
+
+/** Returns a value only if it is a finite number (Open-Meteo may return null for unsupported fields). */
+function optionalNumber(value: number | null | undefined): number | undefined {
+  return value === null || value === undefined || isNaN(value) ? undefined : value;
 }
 
 export function parseForecast(response: WeatherForecastResponse, timezone: string): ParsedForecast {
@@ -58,6 +69,12 @@ export function parseForecast(response: WeatherForecastResponse, timezone: strin
       weatherCode: hourly.weather_code[i],
       weatherDescription: getWeatherDescription(hourly.weather_code[i]),
       weatherIcon: getWeatherIcon(hourly.weather_code[i]),
+      surfacePressure: optionalNumber(hourly.surface_pressure?.[i]),
+      humidity: optionalNumber(hourly.relative_humidity_2m?.[i]),
+      visibility: optionalNumber(hourly.visibility?.[i]),
+      cape: optionalNumber(hourly.cape?.[i]),
+      freezingLevelHeight: optionalNumber(hourly.freezing_level_height?.[i]),
+      windGusts: optionalNumber(hourly.wind_gusts_10m?.[i]),
     };
 
     if (dateStr === todayStr && todayHours.length < 24) {

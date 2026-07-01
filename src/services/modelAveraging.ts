@@ -23,6 +23,22 @@ const NUMERIC_FIELDS: NumericHourlyKey[] = [
   'wind_direction_10m',
 ];
 
+// Extended fields that may be missing/null on some model endpoints (e.g. DWD ICON-EU).
+// Averaged only from models that actually provide a value for a given hour.
+type OptionalNumericHourlyKey = 'surface_pressure' | 'relative_humidity_2m' | 'visibility' | 'cape' | 'freezing_level_height' | 'wind_gusts_10m';
+
+const OPTIONAL_NUMERIC_FIELDS: OptionalNumericHourlyKey[] = [
+  'surface_pressure',
+  'relative_humidity_2m',
+  'visibility',
+  'cape',
+  'freezing_level_height',
+  'wind_gusts_10m',
+];
+
+const OPTIONAL_INTEGER_FIELDS = new Set(['relative_humidity_2m']);
+const OPTIONAL_ONE_DECIMAL_FIELDS = new Set(['surface_pressure']);
+
 function mode(values: number[]): number {
   const freq = new Map<number, number>();
   for (const v of values) freq.set(v, (freq.get(v) ?? 0) + 1);
@@ -75,6 +91,42 @@ export function averageModels(responses: WeatherForecastResponse[]): WeatherFore
       } else {
         averagedNumeric[field][i] = raw;
       }
+    }
+  }
+
+  // Average optional/extended fields. Some models (e.g. DWD ICON-EU) may not
+  // provide a given field or may return null for individual hours — only
+  // defined, non-null values from the models that have them are averaged.
+  // If no model provides any value for a field at all, the field is omitted
+  // entirely from the averaged result (left as undefined for every hour).
+  const averagedOptional: Partial<Record<OptionalNumericHourlyKey, (number | null)[]>> = {};
+  for (const field of OPTIONAL_NUMERIC_FIELDS) {
+    const fieldValues = new Array<number | null>(n).fill(null);
+    let anyValuePresent = false;
+    for (let i = 0; i < n; i++) {
+      const t = refTimes[i];
+      const values: number[] = [];
+      for (let r = 0; r < responses.length; r++) {
+        const idx = indexMaps[r].get(t);
+        if (idx !== undefined) {
+          const val = responses[r].hourly[field]?.[idx];
+          if (val !== undefined && val !== null && !isNaN(val)) values.push(val);
+        }
+      }
+      if (values.length > 0) {
+        anyValuePresent = true;
+        const raw = values.reduce((a, b) => a + b, 0) / values.length;
+        if (OPTIONAL_INTEGER_FIELDS.has(field)) {
+          fieldValues[i] = Math.round(raw);
+        } else if (OPTIONAL_ONE_DECIMAL_FIELDS.has(field)) {
+          fieldValues[i] = Math.round(raw * 10) / 10;
+        } else {
+          fieldValues[i] = raw;
+        }
+      }
+    }
+    if (anyValuePresent) {
+      averagedOptional[field] = fieldValues;
     }
   }
 
@@ -135,6 +187,12 @@ export function averageModels(responses: WeatherForecastResponse[]): WeatherFore
       wind_speed_10m: averagedNumeric.wind_speed_10m,
       wind_direction_10m: averagedNumeric.wind_direction_10m,
       weather_code: averagedWeatherCode,
+      surface_pressure: averagedOptional.surface_pressure,
+      relative_humidity_2m: averagedOptional.relative_humidity_2m,
+      visibility: averagedOptional.visibility,
+      cape: averagedOptional.cape,
+      freezing_level_height: averagedOptional.freezing_level_height,
+      wind_gusts_10m: averagedOptional.wind_gusts_10m,
     },
   };
 }

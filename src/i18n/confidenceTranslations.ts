@@ -36,6 +36,15 @@ export interface ConfidenceDict {
     avgTempFeelsLikeDiff: string;
     maxDiff: string;
     modelAgreementLabel: string;
+    surfacePressure: string;
+    pressureChange: string;
+    humidity: string;
+    cape: string;
+    freezingLevel: string;
+    windDirectionLabel: string;
+  };
+  compassDirections: {
+    n: string; ne: string; e: string; se: string; s: string; sw: string; w: string; nw: string;
   };
   rules: {
     precipHigh: ConfidenceRuleText;
@@ -62,7 +71,20 @@ export interface ConfidenceDict {
     modelAgreementLow: ConfidenceRuleText;
     modelAgreementVeryLow: ConfidenceRuleText;
     localisedShowers: ConfidenceRuleText;
+    terrainOrographicLift: ConfidenceRuleText;
+    terrainFlatStable: ConfidenceRuleText;
+    pressureFalling: ConfidenceRuleText;
+    pressureRising: ConfidenceRuleText;
+    humidityReinforcesRain: ConfidenceRuleText;
+    humidityConflict: ConfidenceRuleText;
+    capeElevated: ConfidenceRuleText;
+    capeStrong: ConfidenceRuleText;
+    freezingLevelUncertain: ConfidenceRuleText;
+    windMoistureMoist: ConfidenceRuleText;
+    windMoistureDry: ConfidenceRuleText;
+    windMoistureNeutral: ConfidenceRuleText;
   };
+  europeAtlanticHint: string;
   summary: {
     highDry: string;
     highRain: string;
@@ -94,6 +116,16 @@ export const confidenceEn: ConfidenceDict = {
     avgTempFeelsLikeDiff: 'Avg temp-feelsLike diff',
     maxDiff: 'Max diff',
     modelAgreementLabel: 'Model agreement',
+    surfacePressure: 'Surface pressure',
+    pressureChange: 'Pressure change',
+    humidity: 'Humidity',
+    cape: 'Atmospheric instability (CAPE)',
+    freezingLevel: 'Freezing level',
+    windDirectionLabel: 'Wind direction',
+  },
+  compassDirections: {
+    n: 'north', ne: 'northeast', e: 'east', se: 'southeast',
+    s: 'south', sw: 'southwest', w: 'west', nw: 'northwest',
   },
   rules: {
     precipHigh: {
@@ -192,7 +224,56 @@ export const confidenceEn: ConfidenceDict = {
       title: 'Localised shower risk',
       description: 'Precipitation probability reaches {maxProb}% but total expected rain is only {totalRain} mm. This pattern is typical of scattered, localised showers — one street may get rain while another remains dry. The model captures the overall shower risk but cannot pinpoint exactly which areas will be affected.',
     },
+    terrainOrographicLift: {
+      title: 'Elevated terrain may enhance local precipitation',
+      description: '{location} sits at approximately {elevation} m elevation, with wind coming from the {direction}. Air forced upward over higher terrain (orographic lift) may enhance cloud formation or rainfall on windward slopes, while other nearby slopes could stay drier due to a possible rain-shadow effect. This is a general terrain heuristic rather than a precise slope-by-slope analysis.',
+    },
+    terrainFlatStable: {
+      title: 'Low-elevation, flatter terrain',
+      description: '{location} lies at approximately {elevation} m elevation, on relatively flat or low-lying terrain. Local terrain-driven effects on cloud formation or precipitation are likely less pronounced here than in mountainous areas, though coastal or valley moisture effects could still play a minor role.',
+    },
+    pressureFalling: {
+      title: 'Falling pressure — signals changing weather',
+      description: 'Surface pressure is dropping by about {absDelta} hPa over the next few hours (from {startPressure} to {endPressure} hPa). A falling pressure trend often signals an approaching low-pressure system or increasing atmospheric instability, which may raise the chance of clouds or precipitation developing while making the exact evolution harder to pin down.',
+    },
+    pressureRising: {
+      title: 'Pressure rising or stable — supports settled weather',
+      description: 'Surface pressure is holding steady or rising by about {absDelta} hPa over the next few hours (from {startPressure} to {endPressure} hPa). Stable or rising pressure typically favors calmer, more predictable weather.',
+    },
+    humidityReinforcesRain: {
+      title: 'High humidity reinforces rain signal',
+      description: 'Relative humidity averages {avgHumidity}% alongside {avgCloud}% average cloud cover. This combination of high humidity and cloud cover reinforces the likelihood that the forecast precipitation signal is accurate.',
+    },
+    humidityConflict: {
+      title: 'Low humidity conflicts with rain probability',
+      description: 'Relative humidity averages only {avgHumidity}%, despite a precipitation probability of up to {maxProb}%. Low humidity alongside a notable rain probability is a conflicting signal that may add uncertainty to the precipitation forecast.',
+    },
+    capeElevated: {
+      title: 'Some atmospheric instability (CAPE) present',
+      description: 'CAPE (Convective Available Potential Energy) reaches about {maxCape} J/kg. This level of instability may support localized or convective showers, which tend to be harder to pinpoint in exact timing and location than widespread frontal rain.',
+    },
+    capeStrong: {
+      title: 'Strong atmospheric instability — thunderstorm potential',
+      description: 'CAPE reaches about {maxCape} J/kg, suggesting strong atmospheric instability. This raises the chance of thunderstorms or heavy convective showers, which are inherently localized and difficult to forecast precisely in time and place.',
+    },
+    freezingLevelUncertain: {
+      title: 'Freezing level close to local elevation',
+      description: 'The freezing level is forecast at approximately {freezingLevel} m, close to the elevation of {location} (about {elevation} m — a difference of only {diff} m). A small shift in the freezing level could change whether precipitation falls as rain or snow, adding uncertainty to the expected precipitation type.',
+    },
+    windMoistureMoist: {
+      title: 'Wind direction suggests moister air mass',
+      description: 'Wind is coming from the {direction}. In many regions this direction tends to carry more moisture, which may reinforce the likelihood of cloud development or precipitation — though this is a general heuristic rather than precise air-mass tracking.',
+    },
+    windMoistureDry: {
+      title: 'Wind direction suggests drier air mass',
+      description: 'Wind is coming from the {direction}, an origin that often carries drier continental air in many regions. This may support a lower precipitation outlook, though local conditions can vary considerably.',
+    },
+    windMoistureNeutral: {
+      title: 'Wind direction noted',
+      description: 'Wind is coming from the {direction}. Wind direction can indicate the general origin of an air mass and may influence moisture content, though without full air-mass tracking this remains only a general indication.',
+    },
   },
+  europeAtlanticHint: ' In Western and Central Europe, westerly and southwesterly winds often carry moist Atlantic air, which could further increase precipitation potential.',
   summary: {
     highDry: 'The forecast for {location} carries high confidence (score {score}/100). Atmospheric conditions appear stable and well-defined — dry, settled weather is expected with low precipitation risk and consistent conditions throughout the day.',
     highRain: 'The forecast for {location} carries high confidence (score {score}/100). Rain is likely — precipitation probability reaches {maxProb}% with {totalRain} mm expected. The forecast model and all three ensemble members agree on a precipitation event.',
@@ -224,6 +305,16 @@ export const confidenceDe: ConfidenceDict = {
     avgTempFeelsLikeDiff: 'Ø Differenz gefühlt/real',
     maxDiff: 'Max. Differenz',
     modelAgreementLabel: 'Modellübereinstimmung',
+    surfacePressure: 'Bodendruck',
+    pressureChange: 'Druckänderung',
+    humidity: 'Luftfeuchtigkeit',
+    cape: 'Atmosphärische Instabilität (CAPE)',
+    freezingLevel: 'Nullgradgrenze',
+    windDirectionLabel: 'Windrichtung',
+  },
+  compassDirections: {
+    n: 'Norden', ne: 'Nordosten', e: 'Osten', se: 'Südosten',
+    s: 'Süden', sw: 'Südwesten', w: 'Westen', nw: 'Nordwesten',
   },
   rules: {
     precipHigh: {
@@ -322,7 +413,56 @@ export const confidenceDe: ConfidenceDict = {
       title: 'Risiko lokaler Schauer',
       description: 'Die Niederschlagswahrscheinlichkeit erreicht {maxProb}%, die erwartete Gesamtregenmenge beträgt jedoch nur {totalRain} mm. Dieses Muster ist typisch für vereinzelte, lokale Schauer — eine Straße kann Regen bekommen, während eine andere trocken bleibt. Das Modell erfasst das allgemeine Schauerrisiko, kann aber nicht genau bestimmen, welche Gebiete betroffen sind.',
     },
+    terrainOrographicLift: {
+      title: 'Erhöhtes Gelände kann lokalen Niederschlag verstärken',
+      description: '{location} liegt auf etwa {elevation} m Höhe, mit Wind aus {direction}. Luft, die über höheres Gelände nach oben gezwungen wird (orographische Hebung), kann die Wolkenbildung oder den Niederschlag an Luvhängen verstärken, während benachbarte Hänge durch einen möglichen Lee-Effekt trockener bleiben könnten. Dies ist eine allgemeine Geländeheuristik und keine präzise hangweise Analyse.',
+    },
+    terrainFlatStable: {
+      title: 'Niedrige Höhenlage, flacheres Gelände',
+      description: '{location} liegt auf etwa {elevation} m Höhe, auf relativ flachem oder tief gelegenem Gelände. Geländebedingte Effekte auf Wolkenbildung oder Niederschlag sind hier wahrscheinlich weniger ausgeprägt als in Gebirgsregionen, wobei küsten- oder talbedingte Feuchteeffekte dennoch eine kleine Rolle spielen könnten.',
+    },
+    pressureFalling: {
+      title: 'Fallender Druck — Anzeichen für Wetteränderung',
+      description: 'Der Bodendruck fällt in den nächsten Stunden um etwa {absDelta} hPa (von {startPressure} auf {endPressure} hPa). Ein fallender Drucktrend deutet oft auf ein herannahendes Tiefdrucksystem oder zunehmende atmosphärische Instabilität hin, was die Wahrscheinlichkeit von Wolken oder Niederschlag erhöhen kann, während der genaue Verlauf schwerer vorherzusagen ist.',
+    },
+    pressureRising: {
+      title: 'Steigender oder stabiler Druck — unterstützt beständiges Wetter',
+      description: 'Der Bodendruck bleibt in den nächsten Stunden stabil oder steigt um etwa {absDelta} hPa (von {startPressure} auf {endPressure} hPa). Stabiler oder steigender Druck begünstigt in der Regel ruhigeres, besser vorhersehbares Wetter.',
+    },
+    humidityReinforcesRain: {
+      title: 'Hohe Luftfeuchtigkeit bestärkt das Regensignal',
+      description: 'Die relative Luftfeuchtigkeit beträgt im Durchschnitt {avgHumidity}% bei einer durchschnittlichen Bewölkung von {avgCloud}%. Diese Kombination aus hoher Luftfeuchtigkeit und Bewölkung bestärkt die Wahrscheinlichkeit, dass das prognostizierte Niederschlagssignal zutrifft.',
+    },
+    humidityConflict: {
+      title: 'Geringe Luftfeuchtigkeit widerspricht der Regenwahrscheinlichkeit',
+      description: 'Die relative Luftfeuchtigkeit beträgt im Durchschnitt nur {avgHumidity}%, trotz einer Niederschlagswahrscheinlichkeit von bis zu {maxProb}%. Geringe Luftfeuchtigkeit bei nennenswerter Regenwahrscheinlichkeit ist ein widersprüchliches Signal, das zusätzliche Unsicherheit in die Niederschlagsprognose bringen kann.',
+    },
+    capeElevated: {
+      title: 'Gewisse atmosphärische Instabilität (CAPE) vorhanden',
+      description: 'CAPE (Convective Available Potential Energy) erreicht etwa {maxCape} J/kg. Dieses Instabilitätsniveau kann lokale oder konvektive Schauer begünstigen, deren genauer Zeitpunkt und Ort schwerer zu bestimmen sind als bei großflächigem Frontalregen.',
+    },
+    capeStrong: {
+      title: 'Starke atmosphärische Instabilität — Gewitterpotenzial',
+      description: 'CAPE erreicht etwa {maxCape} J/kg, was auf starke atmosphärische Instabilität hindeutet. Dies erhöht die Wahrscheinlichkeit von Gewittern oder starken konvektiven Schauern, die naturgemäß lokal begrenzt und zeitlich sowie räumlich schwer präzise vorherzusagen sind.',
+    },
+    freezingLevelUncertain: {
+      title: 'Nullgradgrenze nahe der lokalen Höhenlage',
+      description: 'Die Nullgradgrenze wird bei etwa {freezingLevel} m prognostiziert, nahe der Höhenlage von {location} (etwa {elevation} m — ein Unterschied von nur {diff} m). Eine kleine Verschiebung der Nullgradgrenze könnte darüber entscheiden, ob Niederschlag als Regen oder Schnee fällt, was Unsicherheit bezüglich der erwarteten Niederschlagsart mit sich bringt.',
+    },
+    windMoistureMoist: {
+      title: 'Windrichtung deutet auf feuchtere Luftmasse hin',
+      description: 'Der Wind kommt aus {direction}. In vielen Regionen führt diese Richtung tendenziell mehr Feuchtigkeit mit sich, was die Wahrscheinlichkeit von Wolkenbildung oder Niederschlag bestärken kann — dies ist jedoch eine allgemeine Heuristik und keine präzise Luftmassenverfolgung.',
+    },
+    windMoistureDry: {
+      title: 'Windrichtung deutet auf trockenere Luftmasse hin',
+      description: 'Der Wind kommt aus {direction}, einer Herkunft, die in vielen Regionen oft trockenere kontinentale Luft mit sich bringt. Dies kann eine niedrigere Niederschlagsprognose unterstützen, wobei lokale Bedingungen erheblich variieren können.',
+    },
+    windMoistureNeutral: {
+      title: 'Windrichtung vermerkt',
+      description: 'Der Wind kommt aus {direction}. Die Windrichtung kann die allgemeine Herkunft einer Luftmasse anzeigen und den Feuchtigkeitsgehalt beeinflussen, bleibt jedoch ohne vollständige Luftmassenverfolgung nur ein allgemeiner Hinweis.',
+    },
   },
+  europeAtlanticHint: ' In West- und Mitteleuropa führen west- und südwestliche Winde oft feuchte Atlantikluft mit sich, was das Niederschlagspotenzial weiter erhöhen könnte.',
   summary: {
     highDry: 'Die Prognose für {location} weist hohe Zuverlässigkeit auf (Wert {score}/100). Die atmosphärischen Bedingungen erscheinen stabil und gut definiert — trockenes, beständiges Wetter wird mit geringem Niederschlagsrisiko und gleichbleibenden Bedingungen im Tagesverlauf erwartet.',
     highRain: 'Die Prognose für {location} weist hohe Zuverlässigkeit auf (Wert {score}/100). Regen ist wahrscheinlich — die Niederschlagswahrscheinlichkeit erreicht {maxProb}% bei erwarteten {totalRain} mm. Das Vorhersagemodell und alle drei Ensemble-Mitglieder stimmen bei einem Niederschlagsereignis überein.',
@@ -354,6 +494,16 @@ export const confidencePl: ConfidenceDict = {
     avgTempFeelsLikeDiff: 'Śr. różnica odczuwalna/rzeczywista',
     maxDiff: 'Maks. różnica',
     modelAgreementLabel: 'Zgodność modeli',
+    surfacePressure: 'Ciśnienie przy powierzchni',
+    pressureChange: 'Zmiana ciśnienia',
+    humidity: 'Wilgotność',
+    cape: 'Niestabilność atmosferyczna (CAPE)',
+    freezingLevel: 'Poziom izotermy 0°C',
+    windDirectionLabel: 'Kierunek wiatru',
+  },
+  compassDirections: {
+    n: 'północy', ne: 'północnego wschodu', e: 'wschodu', se: 'południowego wschodu',
+    s: 'południa', sw: 'południowego zachodu', w: 'zachodu', nw: 'północnego zachodu',
   },
   rules: {
     precipHigh: {
@@ -452,7 +602,56 @@ export const confidencePl: ConfidenceDict = {
       title: 'Ryzyko lokalnych opadów przelotnych',
       description: 'Prawdopodobieństwo opadów sięga {maxProb}%, ale całkowita oczekiwana ilość deszczu wynosi jedynie {totalRain} mm. Ten wzorzec jest typowy dla rozproszonych, lokalnych przelotnych opadów — na jednej ulicy może padać deszcz, podczas gdy inna pozostanie sucha. Model uwzględnia ogólne ryzyko przelotnych opadów, ale nie może dokładnie wskazać, które obszary zostaną dotknięte.',
     },
+    terrainOrographicLift: {
+      title: 'Wyniesiony teren może wzmacniać lokalne opady',
+      description: '{location} znajduje się na wysokości około {elevation} m, przy wietrze wiejącym od {direction}. Powietrze wymuszone do wznoszenia nad wyższym terenem (efekt orograficzny) może wzmacniać formowanie się chmur lub opady na zboczach nawietrznych, podczas gdy sąsiednie zbocza mogą pozostać bardziej suche z powodu możliwego efektu cienia opadowego. To ogólna heurystyka terenowa, a nie precyzyjna analiza poszczególnych zboczy.',
+    },
+    terrainFlatStable: {
+      title: 'Niska wysokość, płaski teren',
+      description: '{location} leży na wysokości około {elevation} m, na stosunkowo płaskim lub nisko położonym terenie. Efekty terenowe wpływające na formowanie się chmur czy opady są tu prawdopodobnie mniej wyraźne niż na obszarach górskich, choć nadmorskie lub dolinowe efekty wilgotności mogą wciąż odgrywać niewielką rolę.',
+    },
+    pressureFalling: {
+      title: 'Spadające ciśnienie — sygnał zmiany pogody',
+      description: 'Ciśnienie przy powierzchni spada o około {absDelta} hPa w ciągu najbliższych godzin (z {startPressure} do {endPressure} hPa). Spadający trend ciśnienia często sygnalizuje zbliżający się układ niżowy lub rosnącą niestabilność atmosferyczną, co może zwiększyć szansę na chmury lub opady, jednocześnie utrudniając dokładne określenie ich rozwoju.',
+    },
+    pressureRising: {
+      title: 'Rosnące lub stabilne ciśnienie — sprzyja ustabilizowanej pogodzie',
+      description: 'Ciśnienie przy powierzchni pozostaje stabilne lub rośnie o około {absDelta} hPa w ciągu najbliższych godzin (z {startPressure} do {endPressure} hPa). Stabilne lub rosnące ciśnienie zazwyczaj sprzyja spokojniejszej, bardziej przewidywalnej pogodzie.',
+    },
+    humidityReinforcesRain: {
+      title: 'Wysoka wilgotność wzmacnia sygnał opadów',
+      description: 'Wilgotność względna wynosi średnio {avgHumidity}% przy średnim zachmurzeniu {avgCloud}%. To połączenie wysokiej wilgotności i zachmurzenia wzmacnia prawdopodobieństwo, że prognozowany sygnał opadów jest trafny.',
+    },
+    humidityConflict: {
+      title: 'Niska wilgotność jest sprzeczna z prawdopodobieństwem opadów',
+      description: 'Wilgotność względna wynosi średnio jedynie {avgHumidity}%, mimo prawdopodobieństwa opadów sięgającego {maxProb}%. Niska wilgotność przy zauważalnym prawdopodobieństwie deszczu to sprzeczny sygnał, który może zwiększać niepewność prognozy opadów.',
+    },
+    capeElevated: {
+      title: 'Pewna niestabilność atmosferyczna (CAPE)',
+      description: 'CAPE (dostępna energia potencjalna konwekcji) sięga około {maxCape} J/kg. Ten poziom niestabilności może sprzyjać lokalnym lub konwekcyjnym opadom przelotnym, których dokładny czas i miejsce są trudniejsze do określenia niż przy rozległych opadach frontowych.',
+    },
+    capeStrong: {
+      title: 'Silna niestabilność atmosferyczna — potencjał burzowy',
+      description: 'CAPE sięga około {maxCape} J/kg, co sugeruje silną niestabilność atmosferyczną. Zwiększa to szansę na burze lub intensywne opady konwekcyjne, które z natury są zlokalizowane i trudne do precyzyjnego przewidzenia co do czasu i miejsca.',
+    },
+    freezingLevelUncertain: {
+      title: 'Poziom izotermy 0°C blisko lokalnej wysokości',
+      description: 'Poziom izotermy 0°C prognozowany jest na wysokości około {freezingLevel} m, blisko wysokości {location} (około {elevation} m — różnica zaledwie {diff} m). Niewielka zmiana poziomu izotermy 0°C może zdecydować, czy opady wystąpią jako deszcz czy śnieg, co zwiększa niepewność co do oczekiwanego rodzaju opadów.',
+    },
+    windMoistureMoist: {
+      title: 'Kierunek wiatru sugeruje bardziej wilgotną masę powietrza',
+      description: 'Wiatr wieje od {direction}. W wielu regionach ten kierunek zwykle niesie więcej wilgoci, co może wzmacniać prawdopodobieństwo formowania się chmur lub opadów — jest to jednak ogólna heurystyka, a nie precyzyjne śledzenie mas powietrza.',
+    },
+    windMoistureDry: {
+      title: 'Kierunek wiatru sugeruje bardziej suchą masę powietrza',
+      description: 'Wiatr wieje od {direction} — kierunku, który w wielu regionach często niesie suchsze, kontynentalne powietrze. Może to wspierać niższą prognozę opadów, choć lokalne warunki mogą się znacznie różnić.',
+    },
+    windMoistureNeutral: {
+      title: 'Odnotowano kierunek wiatru',
+      description: 'Wiatr wieje od {direction}. Kierunek wiatru może wskazywać na ogólne pochodzenie masy powietrza i wpływać na zawartość wilgoci, choć bez pełnego śledzenia mas powietrza pozostaje to jedynie ogólną wskazówką.',
+    },
   },
+  europeAtlanticHint: ' W Europie Zachodniej i Środkowej wiatry zachodnie i południowo-zachodnie często niosą wilgotne powietrze atlantyckie, co mogłoby dodatkowo zwiększyć potencjał opadowy.',
   summary: {
     highDry: 'Prognoza dla {location} charakteryzuje się wysoką pewnością (wynik {score}/100). Warunki atmosferyczne wydają się stabilne i dobrze zdefiniowane — oczekiwana jest sucha, ustabilizowana pogoda z niskim ryzykiem opadów i spójnymi warunkami przez cały dzień.',
     highRain: 'Prognoza dla {location} charakteryzuje się wysoką pewnością (wynik {score}/100). Deszcz jest prawdopodobny — prawdopodobieństwo opadów sięga {maxProb}% przy oczekiwanych {totalRain} mm. Model prognostyczny oraz wszystkie trzy modele zespołu są zgodne co do wystąpienia opadów.',

@@ -37,6 +37,7 @@ export interface Translations {
   highCertainty: string;
   mediumCertainty: string;
   lowCertainty: string;
+  relativeImpact: string;
   wmo0: string;
   wmo1: string;
   wmo2: string;
@@ -119,6 +120,7 @@ export const en: Translations = {
   highCertainty: '✅ High Certainty',
   mediumCertainty: '⚠️ Medium Certainty',
   lowCertainty: '🟠 Low Certainty',
+  relativeImpact: 'Relative contribution to the overall confidence score',
   wmo0: 'Clear sky', wmo1: 'Mainly clear', wmo2: 'Partly cloudy', wmo3: 'Overcast',
   wmo45: 'Fog', wmo48: 'Depositing rime fog',
   wmo51: 'Light drizzle', wmo53: 'Moderate drizzle', wmo55: 'Dense drizzle',
@@ -185,6 +187,7 @@ export const de: Translations = {
   highCertainty: '✅ Hohe Sicherheit',
   mediumCertainty: '⚠️ Mittlere Sicherheit',
   lowCertainty: '🟠 Geringe Sicherheit',
+  relativeImpact: 'Relativer Beitrag zum Gesamt-Konfidenzwert',
   wmo0: 'Klarer Himmel', wmo1: 'Überwiegend klar', wmo2: 'Teilweise bewölkt', wmo3: 'Bedeckt',
   wmo45: 'Nebel', wmo48: 'Gefrierender Nebel',
   wmo51: 'Leichter Nieselregen', wmo53: 'Mäßiger Nieselregen', wmo55: 'Starker Nieselregen',
@@ -251,6 +254,7 @@ export const pl: Translations = {
   highCertainty: '✅ Wysoka pewność',
   mediumCertainty: '⚠️ Średnia pewność',
   lowCertainty: '🟠 Niska pewność',
+  relativeImpact: 'Względny wkład w ogólny wynik pewności',
   wmo0: 'Bezchmurnie', wmo1: 'Przeważnie pogodnie', wmo2: 'Częściowe zachmurzenie', wmo3: 'Pochmurno',
   wmo45: 'Mgła', wmo48: 'Marznąca mgła',
   wmo51: 'Lekka mżawka', wmo53: 'Umiarkowana mżawka', wmo55: 'Gęsta mżawka',
