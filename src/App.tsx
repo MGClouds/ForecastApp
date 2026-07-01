@@ -34,16 +34,21 @@ export default function App() {
     setHasSearched(false);
     setModelInfo(null);
     setActiveTab('today');
+    // Automatically fetch the forecast as soon as a location is chosen
+    // (either via search selection or "Use my current location"), skipping
+    // the extra "Show me the weather" click.
+    handleFetchWeather(location);
   }
 
-  async function handleFetchWeather() {
-    if (!selectedLocation) return;
+  async function handleFetchWeather(locationOverride?: SelectedLocation) {
+    const location = locationOverride ?? selectedLocation;
+    if (!location) return;
     setLoading(true);
     setError(null);
     setHasSearched(true);
     setModelInfo(null);
     try {
-      const { latitude, longitude, timezone } = selectedLocation;
+      const { latitude, longitude, timezone } = location;
 
       const [openMeteoResult, ecmwfResult, dwdResult] = await Promise.allSettled([
         fetchWeatherForecast(latitude, longitude, timezone),
@@ -89,20 +94,12 @@ export default function App() {
             <SearchLocation onLocationSelect={handleLocationSelect} />
             <CurrentLocationButton onLocationSelect={handleLocationSelect} />
           </div>
-          {selectedLocation && !forecast && !loading && (
-            <div className={styles.fetchRow}>
-              <span className={styles.selectedInfo}>📍 {selectedLocation.displayName}</span>
-              <button className={styles.fetchBtn} onClick={handleFetchWeather}>
-                {t.showWeather}
-              </button>
-            </div>
-          )}
         </div>
 
         {loading && <LoadingSpinner message={t.loadingModels} />}
 
         {error && !loading && (
-          <ErrorMessage message={error} onRetry={handleFetchWeather} retryLabel={t.retry} />
+          <ErrorMessage message={error} onRetry={() => handleFetchWeather()} retryLabel={t.retry} />
         )}
 
         {forecast && selectedLocation && !loading && (
