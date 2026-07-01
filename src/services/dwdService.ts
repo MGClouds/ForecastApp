@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DWD Service - Deutscher Wetterdienst (German Weather Service) ICON-EU model
  * Accessed via Open-Meteo free API - no key required
  * ICON-EU is a high-resolution NWP model covering Europe at ~7km resolution
@@ -36,7 +36,7 @@ export async function fetchDwdForecast(lat: number, lon: number, timezone: strin
   const response = await fetch(`${DWD_URL}?${params}`);
   if (response.ok) return response.json();
 
-  // Fallback: ICON-EU may not support some of the extended fields — retry with just the core set.
+  // Fallback: ICON-EU may not support some of the extended fields - retry with just the core set.
   const fallbackParams = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),

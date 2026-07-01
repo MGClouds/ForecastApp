@@ -1,4 +1,4 @@
-export type Language = 'en' | 'de' | 'pl';
+﻿export type Language = 'en' | 'de' | 'pl';
 
 export interface Translations {
   appTitle: string;
@@ -129,7 +129,7 @@ export const en: Translations = {
   wmo80: 'Slight rain showers', wmo81: 'Moderate rain showers', wmo82: 'Violent rain showers',
   wmo85: 'Slight snow showers', wmo86: 'Heavy snow showers',
   wmo95: 'Thunderstorm', wmo96: 'Thunderstorm with slight hail', wmo99: 'Thunderstorm with heavy hail',
-  explainModerateProb: 'Precipitation probability reaches {maxProb}%, suggesting conditions are uncertain — forecast models indicate possible but not definite precipitation.',
+  explainModerateProb: 'Precipitation probability reaches {maxProb}%, suggesting conditions are uncertain - forecast models indicate possible but not definite precipitation.',
   explainHighCloudNoRain: 'Average cloud cover is {cloudCover}%, yet precipitation probability remains low. Cloud systems may pass without producing measurable rain.',
   explainHighWind: 'Wind speeds may reach {windSpeed} km/h, causing precipitation zones to move quickly through the area. Timing of any rain could shift by 1–2 hours.',
   explainElevation: '{location} is at approximately {elevation}m elevation. Terrain can enhance precipitation and cause local variations not always captured by models.',
@@ -196,7 +196,7 @@ export const de: Translations = {
   wmo80: 'Leichte Regenschauer', wmo81: 'Mäßige Regenschauer', wmo82: 'Starke Regenschauer',
   wmo85: 'Leichte Schneeschauer', wmo86: 'Starke Schneeschauer',
   wmo95: 'Gewitter', wmo96: 'Gewitter mit leichtem Hagel', wmo99: 'Gewitter mit starkem Hagel',
-  explainModerateProb: 'Die Niederschlagswahrscheinlichkeit erreicht {maxProb}%, was auf unsichere Bedingungen hindeutet — Modelle zeigen mögliche, aber nicht sichere Niederschläge.',
+  explainModerateProb: 'Die Niederschlagswahrscheinlichkeit erreicht {maxProb}%, was auf unsichere Bedingungen hindeutet - Modelle zeigen mögliche, aber nicht sichere Niederschläge.',
   explainHighCloudNoRain: 'Die durchschnittliche Bewölkung beträgt {cloudCover}%, jedoch bleibt die Niederschlagswahrscheinlichkeit gering. Wolkensysteme könnten ohne messbaren Regen passieren.',
   explainHighWind: 'Windgeschwindigkeiten können {windSpeed} km/h erreichen, wodurch sich Niederschlagszonen schnell verlagern können. Der Zeitpunkt von Regen könnte sich um 1–2 Stunden verschieben.',
   explainElevation: '{location} liegt auf etwa {elevation}m Höhe. Das Gelände kann Niederschläge verstärken und lokale Variationen verursachen, die Modelle nicht immer erfassen.',
@@ -263,7 +263,7 @@ export const pl: Translations = {
   wmo80: 'Lekkie przelotne opady', wmo81: 'Umiarkowane przelotne opady', wmo82: 'Gwałtowne przelotne opady',
   wmo85: 'Lekkie przelotne opady śniegu', wmo86: 'Silne przelotne opady śniegu',
   wmo95: 'Burza', wmo96: 'Burza z lekkim gradem', wmo99: 'Burza z silnym gradem',
-  explainModerateProb: 'Prawdopodobieństwo opadów sięga {maxProb}%, co wskazuje na niepewne warunki — modele sugerują możliwe, ale nie pewne opady.',
+  explainModerateProb: 'Prawdopodobieństwo opadów sięga {maxProb}%, co wskazuje na niepewne warunki - modele sugerują możliwe, ale nie pewne opady.',
   explainHighCloudNoRain: 'Średnie zachmurzenie wynosi {cloudCover}%, jednak prawdopodobieństwo opadów pozostaje niskie. Chmury mogą przejść bez mierzalnych opadów.',
   explainHighWind: 'Prędkość wiatru może osiągnąć {windSpeed} km/h, powodując szybkie przemieszczanie się stref opadów. Moment wystąpienia deszczu może przesunąć się o 1–2 godziny.',
   explainElevation: '{location} leży na wysokości około {elevation}m n.p.m. Rzeźba terenu może wzmagać opady i powodować lokalne zróżnicowanie nieuwzględniane przez modele.',

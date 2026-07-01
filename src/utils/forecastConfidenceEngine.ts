@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Forecast Confidence Engine
  *
  * Analyzes hourly forecast data and produces a dynamic, data-driven
@@ -504,7 +504,7 @@ function ruleTerrainOrographic(hours: HourlyForecastItem[], location: SelectedLo
   const dirIndex = compassIndex(avgWindDirection(hours));
   const direction = d.compassDirections[COMPASS_KEYS[dirIndex]];
 
-  // Elevated terrain (heuristic threshold, not a real terrain-gradient analysis) — orographic
+  // Elevated terrain (heuristic threshold, not a real terrain-gradient analysis) - orographic
   // lift and possible rain-shadow effects depending on wind direction relative to the slope.
   if (elevation >= 500) {
     const r = d.rules.terrainOrographicLift;
@@ -519,7 +519,7 @@ function ruleTerrainOrographic(hours: HourlyForecastItem[], location: SelectedLo
     };
   }
 
-  // Low-lying / flat terrain — less pronounced terrain effects, mild positive signal.
+  // Low-lying / flat terrain - less pronounced terrain effects, mild positive signal.
   if (elevation < 100) {
     const r = d.rules.terrainFlatStable;
     return {

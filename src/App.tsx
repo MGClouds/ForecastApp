@@ -25,6 +25,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [modelInfo, setModelInfo] = useState<{ count: number; names: string[]; agreement: number } | null>(null);
+  const [activeTab, setActiveTab] = useState<'today' | 'tomorrow'>('today');
 
   function handleLocationSelect(location: SelectedLocation) {
     setSelectedLocation(location);
@@ -32,6 +33,7 @@ export default function App() {
     setError(null);
     setHasSearched(false);
     setModelInfo(null);
+    setActiveTab('today');
   }
 
   async function handleFetchWeather() {
@@ -106,8 +108,8 @@ export default function App() {
         {forecast && selectedLocation && !loading && (
           <div className={styles.forecastGrid}>
             <WeatherSummary location={selectedLocation} today={forecast.today} modelInfo={modelInfo} />
-            <ForecastTabs forecast={forecast} />
-            <ForecastExplanation today={forecast.today} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
+            <ForecastTabs forecast={forecast} activeTab={activeTab} onTabChange={setActiveTab} />
+            <ForecastExplanation today={activeTab === 'today' ? forecast.today : forecast.tomorrow} location={selectedLocation} modelAgreement={modelInfo?.agreement} />
             <div className={styles.bottomGrid}>
               <ForecastMap location={selectedLocation} />
             </div>

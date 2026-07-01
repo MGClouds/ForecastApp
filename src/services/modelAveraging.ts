@@ -1,4 +1,4 @@
-import type { WeatherForecastResponse } from '../types/weather';
+﻿import type { WeatherForecastResponse } from '../types/weather';
 
 export interface MultiModelResult {
   averaged: WeatherForecastResponse;
@@ -95,7 +95,7 @@ export function averageModels(responses: WeatherForecastResponse[]): WeatherFore
   }
 
   // Average optional/extended fields. Some models (e.g. DWD ICON-EU) may not
-  // provide a given field or may return null for individual hours — only
+  // provide a given field or may return null for individual hours - only
   // defined, non-null values from the models that have them are averaged.
   // If no model provides any value for a field at all, the field is omitted
   // entirely from the averaged result (left as undefined for every hour).

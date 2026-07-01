@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ECMWF Service - European Centre for Medium-Range Weather Forecasts
  * 
  * This service uses the ECMWF model endpoint provided by Open-Meteo.
@@ -16,7 +16,7 @@ import type { WeatherForecastResponse } from '../types/weather';
 
 const ECMWF_URL = 'https://api.open-meteo.com/v1/ecmwf';
 
-// Extended variables — ECMWF via Open-Meteo accepts these, though some (e.g.
+// Extended variables - ECMWF via Open-Meteo accepts these, though some (e.g.
 // visibility, freezing_level_height) may come back as null for this model.
 const EXTENDED_FIELDS = ['surface_pressure', 'relative_humidity_2m', 'visibility', 'cape', 'freezing_level_height', 'wind_gusts_10m'];
 

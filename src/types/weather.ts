@@ -1,4 +1,4 @@
-export interface HourlyWeatherData {
+﻿export interface HourlyWeatherData {
   time: string[];
   temperature_2m: number[];
   apparent_temperature: number[];
@@ -10,7 +10,7 @@ export interface HourlyWeatherData {
   wind_speed_10m: number[];
   wind_direction_10m: number[];
   weather_code: number[];
-  // Additional variables — not guaranteed to be present/non-null on every
+  // Additional variables - not guaranteed to be present/non-null on every
   // Open-Meteo model endpoint (e.g. DWD ICON-EU may omit some of these),
   // so they are optional arrays whose entries may also be null.
   surface_pressure?: (number | null)[];
@@ -48,7 +48,7 @@ export interface HourlyForecastItem {
   weatherCode: number;
   weatherDescription: string;
   weatherIcon: string;
-  // Optional extended variables — may be undefined if the source model
+  // Optional extended variables - may be undefined if the source model
   // endpoint does not provide them (e.g. DWD ICON-EU lacks some fields).
   surfacePressure?: number;
   humidity?: number;

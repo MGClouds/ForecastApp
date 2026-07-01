@@ -1,4 +1,4 @@
-import type { HourlyForecastItem } from '../../types/weather';
+﻿import type { HourlyForecastItem } from '../../types/weather';
 import { formatWindDirection, formatPrecipitation } from '../../utils/formatters';
 import { getWeatherDescriptionTranslated } from '../../utils/weatherCodeHelper';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -35,7 +35,7 @@ export function HourlyForecastCard({ item }: Props) {
           ? <span className={styles.detail}>❄️ {item.snowfall.toFixed(1)}cm</span>
           : item.precipitation > 0
             ? <span className={styles.detail}>{formatPrecipitation(item.precipitation)}</span>
-            : <span className={styles.detail} style={{ opacity: 0.3 }}>—</span>
+            : <span className={styles.detail} style={{ opacity: 0.3 }}>-</span>
         }
       </div>
     </div>
