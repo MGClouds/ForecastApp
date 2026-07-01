@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, LayerGroup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -14,8 +14,9 @@ import {
   type RainViewerData,
   type RadarFrame,
 } from '../../services/radarService';
-import { buildAnimationFrames } from '../../services/weatherMapAnimationService';
+import { buildSmoothAnimationFrames } from '../../services/weatherMapAnimationService';
 import type { OverlayBlob, OverlayChannel } from '../../utils/weatherOverlayGenerator';
+import { generateOrganicBlobOutline } from '../../utils/organicBlobShape';
 import { useLanguage } from '../../i18n/LanguageContext';
 import type { Translations } from '../../i18n/translations';
 import styles from './ForecastMap.module.css';
@@ -64,7 +65,10 @@ function getBlobPopupInfo(blob: OverlayBlob, t: Translations): { icon: string; l
 // of the simulated forecast-based overlay animation (see weatherOverlayGenerator).
 type ActiveLayer = 'none' | 'radar' | OverlayChannel;
 
-const ANIMATION_INTERVAL_MS = 2600;
+// 60 interpolated frames spanning the same ~15s, now..+6h window that used to
+// be covered by 7 discrete keyframe jumps. 255ms * 59 transitions ≈ 15.05s
+// total playback, comfortably at/above the original ~15s target.
+const ANIMATION_INTERVAL_MS = 255;
 
 export function ForecastMap({ location, hours }: Props) {
   const { t } = useLanguage();
@@ -93,7 +97,7 @@ export function ForecastMap({ location, hours }: Props) {
   // Channel used by the forecast overlay animation ('none'/'radar' don't need one).
   const overlayChannel: OverlayChannel = activeLayer === 'none' || activeLayer === 'radar' ? 'auto' : activeLayer;
   const animationFrames = useMemo(
-    () => buildAnimationFrames(hours, location, overlayChannel),
+    () => buildSmoothAnimationFrames(hours, location, overlayChannel),
     [hours, location, overlayChannel]
   );
 
@@ -145,9 +149,10 @@ export function ForecastMap({ location, hours }: Props) {
 
   const currentRadarFrame = radarFrames[currentRadarFrameIndex];
   const currentFrameData = animationFrames[currentAnimationFrame];
-  const frameLabel = currentAnimationFrame === 0
+  const currentHourOffset = currentFrameData?.hourOffset ?? 0;
+  const frameLabel = currentHourOffset === 0
     ? t.nowLabel
-    : t.hourLabel.replace('{n}', String(currentAnimationFrame));
+    : t.hourLabel.replace('{n}', String(currentHourOffset));
 
   return (
     <div className={styles.card}>
@@ -214,24 +219,43 @@ export function ForecastMap({ location, hours }: Props) {
           {showOverlay && currentFrameData?.blobs.map(blob => {
             const isRain = blob.intensity.endsWith('rain');
             const popupInfo = getBlobPopupInfo(blob, t);
+            // Organic, radar-like outline instead of a perfect circle: an
+            // outer, larger, lower-opacity polygon fakes a soft/blurred
+            // edge, while the inner polygon (which carries the popup) is
+            // the higher-opacity "core" of the precipitation patch. Both
+            // are jittered deterministically from the blob's stable id, so
+            // the shape stays visually consistent frame-to-frame - only its
+            // center/size/opacity move via interpolation.
+            const outerOutline = generateOrganicBlobOutline(blob.lat, blob.lng, blob.radiusMeters, `${blob.id}-outer`, 1.25);
+            const innerOutline = generateOrganicBlobOutline(blob.lat, blob.lng, blob.radiusMeters, `${blob.id}-inner`, 0.85);
             return (
-              <Circle
-                key={blob.id}
-                center={[blob.lat, blob.lng]}
-                radius={blob.radiusMeters}
-                pathOptions={{
-                  color: blob.color,
-                  fillColor: blob.color,
-                  fillOpacity: blob.opacity,
-                  stroke: false,
-                  className: isRain ? styles.rainStreak : undefined,
-                }}
-              >
-                <Popup>
-                  {popupInfo.icon} {popupInfo.label}
-                  {popupInfo.valueText ? ` — ${popupInfo.valueText}` : ''} {t.overlayForecastSuffix}
-                </Popup>
-              </Circle>
+              <LayerGroup key={blob.id}>
+                <Polygon
+                  positions={outerOutline}
+                  interactive={false}
+                  pathOptions={{
+                    color: blob.color,
+                    fillColor: blob.color,
+                    fillOpacity: blob.opacity * 0.45,
+                    stroke: false,
+                  }}
+                />
+                <Polygon
+                  positions={innerOutline}
+                  pathOptions={{
+                    color: blob.color,
+                    fillColor: blob.color,
+                    fillOpacity: blob.opacity,
+                    stroke: false,
+                    className: isRain ? styles.rainStreak : undefined,
+                  }}
+                >
+                  <Popup>
+                    {popupInfo.icon} {popupInfo.label}
+                    {popupInfo.valueText ? ` — ${popupInfo.valueText}` : ''} {t.overlayForecastSuffix}
+                  </Popup>
+                </Polygon>
+              </LayerGroup>
             );
           })}
         </MapContainer>
